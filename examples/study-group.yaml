@@ -1,0 +1,351 @@
+# Study Group / Education Server Template
+# For study groups, tutoring communities, and academic servers.
+# Features Pomodoro-style voice rooms, homework help forums, and subject channels.
+
+roles:
+  - name: "Admin"
+    color: "#e74c3c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Teacher"
+    color: "#9b59b6"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - ManageMessages
+      - ManageChannels
+      - ManageThreads
+      - MuteMembers
+      - MoveMembers
+      - ModerateMembers
+      - ManageEvents
+
+  - name: "Tutor"
+    color: "#e67e22"
+    hoist: true
+    mentionable: true
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - ManageMessages
+      - ManageThreads
+      - Connect
+      - Speak
+      - MuteMembers
+      - MoveMembers
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageThreads
+      - ModerateMembers
+
+  - name: "Senior Student"
+    color: "#1abc9c"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+      - CreatePublicThreads
+
+  - name: "Student"
+    color: "#3498db"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - ReadMessageHistory
+
+categories:
+  - name: "INFORMATION"
+    channels:
+      - name: "rules"
+        type: text
+        topic: "Community guidelines and academic integrity policy"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+
+      - name: "announcements"
+        type: announcement
+        topic: "Schedule changes, exam dates, and community updates"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+          - role: "Teacher"
+            allow:
+              - SendMessages
+
+      - name: "resources"
+        type: text
+        topic: "Study guides, textbook links, and reference material"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Teacher"
+            allow:
+              - SendMessages
+          - role: "Tutor"
+            allow:
+              - SendMessages
+
+      - name: "tutor-schedule"
+        type: text
+        topic: "Tutor availability and office hours schedule"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Teacher"
+            allow:
+              - SendMessages
+          - role: "Tutor"
+            allow:
+              - SendMessages
+
+  - name: "GENERAL"
+    channels:
+      - name: "general-chat"
+        type: text
+        topic: "Casual conversation and community socializing"
+        slowmode: 3
+
+      - name: "introductions"
+        type: text
+        topic: "New here? Tell us what you're studying"
+        slowmode: 30
+
+      - name: "motivation"
+        type: text
+        topic: "Study tips, encouragement, and productivity advice"
+        slowmode: 5
+
+      - name: "off-topic"
+        type: text
+        topic: "Non-academic conversation"
+
+  - name: "HOMEWORK HELP"
+    channels:
+      - name: "homework-help"
+        type: forum
+        topic: "Post your homework questions — tag the subject"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Math"
+            moderated: false
+          - name: "Science"
+            moderated: false
+          - name: "English"
+            moderated: false
+          - name: "Computer Science"
+            moderated: false
+          - name: "History"
+            moderated: false
+          - name: "Other"
+            moderated: false
+          - name: "Solved"
+            moderated: false
+            emoji: "✅"
+
+      - name: "exam-prep"
+        type: forum
+        topic: "Practice problems, study strategies, and exam tips"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Practice Problems"
+            moderated: false
+          - name: "Study Strategy"
+            moderated: false
+          - name: "Past Exams"
+            moderated: false
+          - name: "Flashcards"
+            moderated: false
+
+      - name: "essay-review"
+        type: forum
+        topic: "Get peer feedback on your writing"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Review Requested"
+            moderated: false
+          - name: "Draft"
+            moderated: false
+          - name: "Final Review"
+            moderated: false
+          - name: "Reviewed"
+            moderated: false
+            emoji: "✅"
+
+  - name: "SUBJECTS"
+    channels:
+      - name: "math"
+        type: text
+        topic: "Mathematics — algebra, calculus, statistics, etc."
+        slowmode: 3
+
+      - name: "science"
+        type: text
+        topic: "Physics, chemistry, biology"
+        slowmode: 3
+
+      - name: "english-and-writing"
+        type: text
+        topic: "Literature, grammar, and creative writing"
+        slowmode: 3
+
+      - name: "computer-science"
+        type: text
+        topic: "Programming, data structures, algorithms"
+        slowmode: 3
+
+      - name: "history-and-social-studies"
+        type: text
+        topic: "History, geography, and social sciences"
+        slowmode: 3
+
+      - name: "languages"
+        type: text
+        topic: "Foreign language learning and practice"
+        slowmode: 3
+
+  - name: "STUDY ROOMS"
+    channels:
+      - name: "quiet-study"
+        type: voice
+        bitrate: 64000
+        user_limit: 25
+
+      - name: "group-study-1"
+        type: voice
+        bitrate: 96000
+        user_limit: 8
+
+      - name: "group-study-2"
+        type: voice
+        bitrate: 96000
+        user_limit: 8
+
+      - name: "group-study-3"
+        type: voice
+        bitrate: 96000
+        user_limit: 8
+
+      - name: "tutoring-room"
+        type: voice
+        bitrate: 96000
+        user_limit: 4
+
+      - name: "office-hours"
+        type: stage
+        topic: "Scheduled tutor and teacher Q&A sessions"
+
+  - name: "HANGOUT"
+    channels:
+      - name: "general-voice"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+      - name: "music-and-chill"
+        type: voice
+        bitrate: 128000
+        user_limit: 0
+
+  - name: "STAFF"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Admin"
+        allow:
+          - ViewChannel
+      - role: "Teacher"
+        allow:
+          - ViewChannel
+      - role: "Tutor"
+        allow:
+          - ViewChannel
+      - role: "Moderator"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "staff-chat"
+        type: text
+        topic: "Staff discussion and coordination"
+
+      - name: "mod-log"
+        type: text
+        topic: "Automated moderation logs"
+        permissions:
+          - role: "Tutor"
+            deny:
+              - SendMessages
+          - role: "Moderator"
+            deny:
+              - SendMessages
+
+      - name: "curriculum-planning"
+        type: text
+        topic: "Lesson planning and curriculum discussion"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - ViewChannel
+
+      - name: "staff-voice"
+        type: voice
+        bitrate: 64000
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Bot commands and utility"
+    slowmode: 3

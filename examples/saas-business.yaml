@@ -1,0 +1,374 @@
+# SaaS / Business Community Server Template
+# For companies building community around their product.
+# Support forums, bug reports, feature requests, and tiered customer access.
+
+roles:
+  - name: "Team"
+    color: "#e74c3c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Admin"
+    color: "#c0392b"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageChannels
+      - ManageThreads
+      - ModerateMembers
+      - ManageEvents
+
+  - name: "Partner"
+    color: "#9b59b6"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Beta Tester"
+    color: "#e67e22"
+    hoist: false
+    mentionable: true
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Customer"
+    color: "#3498db"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Member"
+    color: "#95a5a6"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - AttachFiles
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - ReadMessageHistory
+
+categories:
+  - name: "WELCOME"
+    channels:
+      - name: "rules-and-info"
+        type: text
+        topic: "Community guidelines and server info"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+      - name: "announcements"
+        type: announcement
+        topic: "Product updates, releases, and company news"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+      - name: "changelog"
+        type: text
+        topic: "Version history and release notes"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+      - name: "roadmap"
+        type: text
+        topic: "Public product roadmap"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+  - name: "COMMUNITY"
+    channels:
+      - name: "general"
+        type: text
+        topic: "General discussion"
+        slowmode: 3
+
+      - name: "introductions"
+        type: text
+        topic: "Tell us about yourself and how you use our product"
+        slowmode: 30
+
+      - name: "wins-and-showcases"
+        type: forum
+        topic: "Share what you've built with our product"
+        default_sort_order: latest_activity
+        default_forum_layout: gallery
+        default_auto_archive_duration: 10080
+        available_tags:
+          - name: "Showcase"
+            moderated: false
+          - name: "Success Story"
+            moderated: false
+          - name: "Integration"
+            moderated: false
+
+      - name: "tips-and-tricks"
+        type: text
+        topic: "Share your workflows and pro tips"
+        slowmode: 5
+
+  - name: "SUPPORT"
+    channels:
+      - name: "get-help"
+        type: forum
+        topic: "Need help? Create a post describing your issue"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Question"
+            moderated: false
+          - name: "Issue"
+            moderated: false
+          - name: "How-To"
+            moderated: false
+          - name: "Solved"
+            moderated: true
+            emoji: "✅"
+          - name: "Awaiting Response"
+            moderated: true
+
+      - name: "bug-reports"
+        type: forum
+        topic: "Found a bug? Report it here with reproduction steps"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 10080
+        available_tags:
+          - name: "Critical"
+            moderated: false
+            emoji: "🔴"
+          - name: "Major"
+            moderated: false
+            emoji: "🟠"
+          - name: "Minor"
+            moderated: false
+            emoji: "🟡"
+          - name: "Cosmetic"
+            moderated: false
+          - name: "Confirmed"
+            moderated: true
+          - name: "Fixed"
+            moderated: true
+            emoji: "✅"
+
+      - name: "feature-requests"
+        type: forum
+        topic: "Suggest new features and vote on ideas"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 10080
+        available_tags:
+          - name: "New Feature"
+            moderated: false
+          - name: "Enhancement"
+            moderated: false
+          - name: "Integration"
+            moderated: false
+          - name: "Planned"
+            moderated: true
+            emoji: "✅"
+          - name: "Under Review"
+            moderated: true
+          - name: "Won't Do"
+            moderated: true
+
+      - name: "faq"
+        type: text
+        topic: "Frequently asked questions"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+  - name: "PRODUCT"
+    channels:
+      - name: "api-and-developers"
+        type: forum
+        topic: "API documentation questions and developer support"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "API"
+            moderated: false
+          - name: "SDK"
+            moderated: false
+          - name: "Webhook"
+            moderated: false
+          - name: "Solved"
+            moderated: false
+            emoji: "✅"
+
+      - name: "integrations"
+        type: text
+        topic: "Third-party integrations and plugins"
+        slowmode: 5
+
+  - name: "BETA"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Beta Tester"
+        allow:
+          - ViewChannel
+      - role: "Team"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "beta-announcements"
+        type: text
+        topic: "Beta program updates and new builds"
+        permissions:
+          - role: "Beta Tester"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+      - name: "beta-feedback"
+        type: forum
+        topic: "Report issues and share feedback on beta features"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Bug"
+            moderated: false
+            emoji: "🐛"
+          - name: "Feedback"
+            moderated: false
+          - name: "Acknowledged"
+            moderated: true
+
+      - name: "beta-chat"
+        type: text
+        topic: "General discussion about beta features"
+
+  - name: "EVENTS"
+    channels:
+      - name: "event-announcements"
+        type: text
+        topic: "Upcoming office hours, webinars, and events"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Team"
+            allow:
+              - SendMessages
+
+      - name: "office-hours"
+        type: stage
+        topic: "Live Q&A and product demos"
+
+      - name: "community-voice"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+  - name: "INTERNAL"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Team"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "team-chat"
+        type: text
+        topic: "Internal team discussion"
+
+      - name: "escalations"
+        type: text
+        topic: "Escalated customer issues requiring attention"
+
+      - name: "customer-insights"
+        type: text
+        topic: "Aggregated feedback and community metrics"
+
+      - name: "mod-log"
+        type: text
+        topic: "Automated moderation and bot logs"
+        permissions:
+          - role: "Team"
+            deny:
+              - SendMessages
+
+      - name: "team-voice"
+        type: voice
+        bitrate: 64000
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Bot commands"
+    slowmode: 3

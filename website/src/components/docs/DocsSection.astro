@@ -1,0 +1,24 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  level?: 2 | 3;
+}
+
+const { id, title, level = 2 } = Astro.props;
+const Tag = `h${level}` as "h2" | "h3";
+const headingClass =
+  level === 2
+    ? "text-2xl font-bold tracking-tight sm:text-3xl"
+    : "text-xl font-semibold";
+---
+
+<section id={id} class="scroll-mt-24 mb-16">
+  <Tag class={`${headingClass} mb-6 group`}>
+    <a href={`#${id}`} class="hover:text-blurple transition-colors">
+      {title}
+      <span class="ml-2 text-text-secondary/0 group-hover:text-text-secondary/40 transition-colors">#</span>
+    </a>
+  </Tag>
+  <slot />
+</section>

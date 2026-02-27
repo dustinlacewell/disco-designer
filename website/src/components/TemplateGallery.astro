@@ -1,0 +1,99 @@
+---
+const github = "https://github.com/dustinlacewell/disco-designer";
+
+const templates = [
+  {
+    file: "gaming-community.yaml",
+    name: "Gaming Community",
+    tagline: "Multi-game servers with LFG forums and squad voice",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.96 3.074 2.108 4.196a6.375 6.375 0 009.024 0 7.198 7.198 0 002.108-4.196 48.39 48.39 0 01-4.163.3.64.64 0 01-.657-.643v0zm-6.375 8.288a5.25 5.25 0 002.108.852v4.523h4.5v-4.523a5.25 5.25 0 002.108-.852" />`,
+    color: "#e74c3c",
+  },
+  {
+    file: "developer-community.yaml",
+    name: "Developer Community",
+    tagline: "Code help forums, project showcases, and peer review",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5" />`,
+    color: "#3498db",
+  },
+  {
+    file: "content-creator.yaml",
+    name: "Content Creator",
+    tagline: "Tiered subscriber access for YouTubers and streamers",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />`,
+    color: "#e91e63",
+  },
+  {
+    file: "saas-business.yaml",
+    name: "SaaS Business",
+    tagline: "Support forums, bug reports, and beta programs",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3H21m-3.75 3H21" />`,
+    color: "#2ecc71",
+  },
+  {
+    file: "study-group.yaml",
+    name: "Study Group",
+    tagline: "Homework help, Pomodoro rooms, and tutoring sessions",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />`,
+    color: "#f39c12",
+  },
+  {
+    file: "community-server.yaml",
+    name: "Community Server",
+    tagline: "General-purpose template with moderation setup",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />`,
+    color: "#9b59b6",
+  },
+  {
+    file: "solo-dev-patreon.yaml",
+    name: "Solo Dev Patreon",
+    tagline: "Patreon tiers with beta builds and priority support",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />`,
+    color: "#e5c100",
+  },
+];
+---
+
+<section id="templates" class="px-6 py-20 sm:py-28">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-12 text-center">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+        Start with a template
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-text-secondary">
+        7 production-ready templates for the most common server types.
+        Use as-is or customize to fit your community.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {templates.map((t) => (
+        <a
+          href={`${github}/blob/main/examples/${t.file}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group rounded-2xl border border-border bg-surface-raised p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-blurple/30 hover:shadow-lg hover:shadow-blurple/5"
+        >
+          <div class="mb-3 flex items-center gap-3">
+            <div
+              class="flex h-9 w-9 items-center justify-center rounded-lg"
+              style={`background: ${t.color}15; color: ${t.color};`}
+            >
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <Fragment set:html={t.icon} />
+              </svg>
+            </div>
+            <h3 class="font-semibold group-hover:text-blurple-light transition-colors">{t.name}</h3>
+          </div>
+          <p class="text-sm leading-relaxed text-text-secondary">{t.tagline}</p>
+          <div class="mt-3 flex items-center gap-1 text-xs text-text-secondary/60">
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            {t.file}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

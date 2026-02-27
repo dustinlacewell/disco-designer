@@ -1,0 +1,138 @@
+<section class="px-6 py-20 sm:py-28">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-12 text-center">
+      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+        Write YAML. Get a server.
+      </h2>
+      <p class="mx-auto mt-4 max-w-2xl text-text-secondary">
+        Your template defines the desired state. The bot makes it real.
+      </p>
+    </div>
+
+    <div class="grid items-start gap-8 md:grid-cols-2">
+      <!-- YAML Code -->
+      <div>
+        <div class="mb-2 flex items-center gap-2 px-1 text-xs text-text-secondary">
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+          </svg>
+          gaming-community.yaml
+        </div>
+        <pre class="overflow-x-auto rounded-2xl border border-border bg-surface-raised p-5 font-mono text-[0.8rem] leading-relaxed"><code><span class="yaml-comment"># gaming-community.yaml</span>
+<span class="yaml-key">roles</span><span class="yaml-punct">:</span>
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"Admin"</span>
+    <span class="yaml-key">color</span><span class="yaml-punct">:</span> <span class="yaml-string">"#e74c3c"</span>
+    <span class="yaml-key">hoist</span><span class="yaml-punct">:</span> <span class="yaml-bool">true</span>
+    <span class="yaml-key">permissions</span><span class="yaml-punct">:</span>
+      - <span class="yaml-string">Administrator</span>
+
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"Moderator"</span>
+    <span class="yaml-key">color</span><span class="yaml-punct">:</span> <span class="yaml-string">"#2ecc71"</span>
+    <span class="yaml-key">hoist</span><span class="yaml-punct">:</span> <span class="yaml-bool">true</span>
+    <span class="yaml-key">permissions</span><span class="yaml-punct">:</span>
+      - <span class="yaml-string">KickMembers</span>
+      - <span class="yaml-string">BanMembers</span>
+      - <span class="yaml-string">ManageMessages</span>
+
+<span class="yaml-key">categories</span><span class="yaml-punct">:</span>
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"GENERAL"</span>
+    <span class="yaml-key">channels</span><span class="yaml-punct">:</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"welcome"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">text</span>
+        <span class="yaml-key">topic</span><span class="yaml-punct">:</span> <span class="yaml-string">"Say hi!"</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"general"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">text</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"memes"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">text</span>
+        <span class="yaml-key">slowmode</span><span class="yaml-punct">:</span> <span class="yaml-number">10</span>
+
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"LFG"</span>
+    <span class="yaml-key">channels</span><span class="yaml-punct">:</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"find-a-group"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">forum</span>
+        <span class="yaml-key">available_tags</span><span class="yaml-punct">:</span>
+          - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"NA"</span>
+          - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"EU"</span>
+          - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"Ranked"</span>
+
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"VOICE"</span>
+    <span class="yaml-key">channels</span><span class="yaml-punct">:</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"squad-1"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">voice</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"squad-2"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">voice</span></code></pre>
+      </div>
+
+      <!-- Discord Sidebar Mockup -->
+      <div>
+        <div class="mb-2 flex items-center gap-2 px-1 text-xs text-text-secondary">
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />
+          </svg>
+          Result in Discord
+        </div>
+        <div class="rounded-2xl border border-border bg-[#2b2d31] p-4">
+          <!-- Server header -->
+          <div class="mb-3 flex items-center gap-2 border-b border-[#1e1f22] pb-3">
+            <div class="flex h-8 w-8 items-center justify-center rounded-full bg-blurple text-xs font-bold text-white">G</div>
+            <span class="text-sm font-semibold text-white">Gaming Community</span>
+          </div>
+
+          <!-- Roles preview -->
+          <div class="mb-3 flex gap-2 px-2">
+            <span class="rounded-full border border-[#e74c3c]/40 px-2 py-0.5 text-xs" style="color: #e74c3c;">Admin</span>
+            <span class="rounded-full border border-[#2ecc71]/40 px-2 py-0.5 text-xs" style="color: #2ecc71;">Moderator</span>
+          </div>
+
+          <!-- Channel list -->
+          <div class="discord-category">GENERAL</div>
+          <div class="discord-channel">
+            <span class="discord-channel-icon">#</span>
+            <span>welcome</span>
+          </div>
+          <div class="discord-channel">
+            <span class="discord-channel-icon">#</span>
+            <span>general</span>
+          </div>
+          <div class="discord-channel">
+            <span class="discord-channel-icon">#</span>
+            <span>memes</span>
+            <span class="ml-auto text-xs text-text-secondary/50">10s</span>
+          </div>
+
+          <div class="discord-category">LFG</div>
+          <div class="discord-channel">
+            <span class="discord-channel-icon">
+              <svg class="inline h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+              </svg>
+            </span>
+            <span>find-a-group</span>
+            <span class="ml-auto flex gap-1">
+              <span class="rounded bg-[#5865f2]/20 px-1.5 py-0.5 text-[0.6rem] text-blurple-light">NA</span>
+              <span class="rounded bg-[#5865f2]/20 px-1.5 py-0.5 text-[0.6rem] text-blurple-light">EU</span>
+            </span>
+          </div>
+
+          <div class="discord-category">VOICE</div>
+          <div class="discord-channel">
+            <span class="discord-channel-icon">
+              <svg class="inline h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+              </svg>
+            </span>
+            <span>squad-1</span>
+          </div>
+          <div class="discord-channel">
+            <span class="discord-channel-icon">
+              <svg class="inline h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" />
+              </svg>
+            </span>
+            <span>squad-2</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --color-blurple: #5865F2;
+  --color-blurple-light: #7289DA;
+  --color-blurple-dark: #4752C4;
+  --color-surface: #1a1a2e;
+  --color-surface-raised: #232340;
+  --color-surface-overlay: #2a2a4a;
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-border: #334155;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+::selection {
+  background-color: var(--color-blurple);
+  color: white;
+}
+
+/* YAML syntax highlighting (hand-annotated, no JS) */
+.yaml-comment { color: #546e7a; }
+.yaml-key     { color: #89ddff; }
+.yaml-string  { color: #c3e88d; }
+.yaml-bool    { color: #ff5370; }
+.yaml-number  { color: #f78c6c; }
+.yaml-punct   { color: #89ddff; }
+
+/* Discord sidebar mockup styles */
+.discord-category {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  padding: 1rem 0 0.25rem 0.5rem;
+}
+
+.discord-channel {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  transition: background-color 0.15s;
+}
+
+.discord-channel:hover {
+  background-color: var(--color-surface-overlay);
+  color: var(--color-text-primary);
+}
+
+.discord-channel-icon {
+  flex-shrink: 0;
+  width: 1.25rem;
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0.6;
+}
+
+/* Docs prose styles */
+.docs-prose p {
+  line-height: 1.75;
+  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.docs-prose strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.docs-prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--color-surface-raised);
+  padding: 0.15em 0.4em;
+  border-radius: 0.375rem;
+  color: var(--color-blurple-light);
+}
+
+.docs-prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+.docs-prose ul,
+.docs-prose ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text-secondary);
+}
+
+.docs-prose li {
+  margin-bottom: 0.375rem;
+  line-height: 1.75;
+}
+
+.docs-prose li::marker {
+  color: var(--color-text-secondary);
+}
+
+.docs-prose a {
+  color: var(--color-blurple-light);
+  text-underline-offset: 2px;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.15s;
+}
+
+.docs-prose a:hover {
+  text-decoration-color: var(--color-blurple-light);
+}

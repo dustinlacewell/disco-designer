@@ -1,0 +1,298 @@
+# Gaming Community Server Template
+# Designed for multi-game communities with competitive and casual players.
+# Follows 2025-2026 best practices: forum LFG, squad voice rooms, clip sharing.
+
+roles:
+  - name: "Admin"
+    color: "#e74c3c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageChannels
+      - MuteMembers
+      - DeafenMembers
+      - MoveMembers
+      - ModerateMembers
+      - ManageEvents
+
+  - name: "Event Manager"
+    color: "#9b59b6"
+    hoist: false
+    mentionable: true
+    permissions:
+      - ManageEvents
+      - MuteMembers
+      - MoveMembers
+      - Connect
+      - Speak
+
+  - name: "VIP"
+    color: "#f1c40f"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - UseExternalEmojis
+      - UseExternalStickers
+      - AttachFiles
+      - EmbedLinks
+      - AddReactions
+      - Stream
+
+  - name: "Member"
+    color: "#3498db"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+      - Stream
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - ReadMessageHistory
+
+categories:
+  - name: "INFORMATION"
+    channels:
+      - name: "rules"
+        type: text
+        topic: "Server rules — read before posting"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Moderator"
+            allow:
+              - SendMessages
+              - ManageMessages
+
+      - name: "announcements"
+        type: announcement
+        topic: "Server news, events, and updates"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+              - ManageMessages
+
+      - name: "server-guide"
+        type: text
+        topic: "FAQ, channel guide, and how to get roles"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+
+  - name: "GENERAL"
+    channels:
+      - name: "general"
+        type: text
+        topic: "Main hangout — keep it friendly"
+        slowmode: 3
+
+      - name: "introductions"
+        type: text
+        topic: "New here? Tell us about yourself"
+        slowmode: 30
+
+      - name: "memes"
+        type: text
+        topic: "Gaming memes and humor"
+        slowmode: 5
+
+      - name: "clips-and-highlights"
+        type: text
+        topic: "Share your best gameplay clips"
+        slowmode: 10
+
+      - name: "screenshots"
+        type: text
+        topic: "In-game screenshots and photo mode shots"
+        slowmode: 10
+
+  - name: "LFG"
+    channels:
+      - name: "find-a-group"
+        type: forum
+        topic: "Looking for group? Create a post with your game, region, and rank"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 1440
+        available_tags:
+          - name: "NA"
+            moderated: false
+          - name: "EU"
+            moderated: false
+          - name: "Asia/OCE"
+            moderated: false
+          - name: "Casual"
+            moderated: false
+          - name: "Ranked"
+            moderated: false
+          - name: "Filled"
+            moderated: false
+            emoji: "✅"
+
+      - name: "team-recruitment"
+        type: forum
+        topic: "Recruit players for your team or find a team to join"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Recruiting"
+            moderated: false
+          - name: "Free Agent"
+            moderated: false
+          - name: "Closed"
+            moderated: true
+
+  - name: "COMPETITIVE"
+    channels:
+      - name: "tournament-info"
+        type: text
+        topic: "Upcoming tournaments, brackets, and sign-ups"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Event Manager"
+            allow:
+              - SendMessages
+              - ManageMessages
+
+      - name: "scrim-scheduling"
+        type: text
+        topic: "Schedule practice matches and scrims"
+        slowmode: 10
+
+      - name: "vod-review"
+        type: forum
+        topic: "Post gameplay VODs for community feedback and coaching"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Looking for Feedback"
+            moderated: false
+          - name: "Coaching"
+            moderated: false
+          - name: "Reviewed"
+            moderated: true
+
+  - name: "VOICE"
+    channels:
+      - name: "general-voice"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+      - name: "squad-1"
+        type: voice
+        bitrate: 96000
+        user_limit: 5
+
+      - name: "squad-2"
+        type: voice
+        bitrate: 96000
+        user_limit: 5
+
+      - name: "squad-3"
+        type: voice
+        bitrate: 96000
+        user_limit: 5
+
+      - name: "watch-party"
+        type: voice
+        bitrate: 64000
+        user_limit: 25
+
+  - name: "VIP LOUNGE"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "VIP"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "vip-chat"
+        type: text
+        topic: "Exclusive chat for VIP members and boosters"
+
+      - name: "vip-voice"
+        type: voice
+        bitrate: 128000
+        user_limit: 0
+
+  - name: "STAFF"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Admin"
+        allow:
+          - ViewChannel
+      - role: "Moderator"
+        allow:
+          - ViewChannel
+      - role: "Event Manager"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "mod-chat"
+        type: text
+        topic: "Staff discussion"
+
+      - name: "mod-log"
+        type: text
+        topic: "Automated moderation logs"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - ViewChannel
+
+      - name: "event-planning"
+        type: text
+        topic: "Plan tournaments and community events"
+
+      - name: "staff-voice"
+        type: voice
+        bitrate: 64000
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Use bot commands here"
+    slowmode: 3

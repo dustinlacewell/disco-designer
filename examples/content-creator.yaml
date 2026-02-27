@@ -1,0 +1,389 @@
+# Content Creator Server Template
+# For YouTubers, streamers, and online creators.
+# Supports tiered subscriber access, upload alerts, and community engagement.
+
+roles:
+  - name: "Creator"
+    color: "#e91e63"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Admin"
+    color: "#e74c3c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageChannels
+      - MuteMembers
+      - DeafenMembers
+      - MoveMembers
+      - ModerateMembers
+      - ManageEvents
+
+  - name: "Subscriber T3"
+    color: "#f1c40f"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - UseExternalStickers
+      - AttachFiles
+      - EmbedLinks
+      - Stream
+
+  - name: "Subscriber T2"
+    color: "#e67e22"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Subscriber T1"
+    color: "#1abc9c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Nitro Booster"
+    color: "#ff73fa"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - UseExternalStickers
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "Member"
+    color: "#3498db"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - ReadMessageHistory
+
+categories:
+  - name: "WELCOME"
+    channels:
+      - name: "rules"
+        type: text
+        topic: "Community guidelines — be kind, be respectful"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+
+      - name: "announcements"
+        type: announcement
+        topic: "Channel updates, milestones, and news"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Creator"
+            allow:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+
+      - name: "upload-alerts"
+        type: announcement
+        topic: "New video and stream notifications"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Creator"
+            allow:
+              - SendMessages
+
+  - name: "COMMUNITY"
+    channels:
+      - name: "general"
+        type: text
+        topic: "Main community chat"
+        slowmode: 3
+
+      - name: "introductions"
+        type: text
+        topic: "New here? Say hello!"
+        slowmode: 30
+
+      - name: "fan-art"
+        type: text
+        topic: "Share your fan art and creations"
+        slowmode: 15
+
+      - name: "memes"
+        type: text
+        topic: "Memes and humor"
+        slowmode: 5
+
+      - name: "suggestions"
+        type: forum
+        topic: "Suggest content ideas and improvements"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Video Idea"
+            moderated: false
+          - name: "Stream Idea"
+            moderated: false
+          - name: "Server Idea"
+            moderated: false
+          - name: "Planned"
+            moderated: true
+            emoji: "✅"
+
+  - name: "CONTENT"
+    channels:
+      - name: "video-discussion"
+        type: text
+        topic: "Discuss the latest videos"
+        slowmode: 3
+
+      - name: "stream-chat"
+        type: text
+        topic: "Live stream overflow chat"
+
+      - name: "content-feedback"
+        type: forum
+        topic: "Give feedback on recent content"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Video"
+            moderated: false
+          - name: "Stream"
+            moderated: false
+          - name: "Other"
+            moderated: false
+
+  - name: "SUBSCRIBER LOUNGE"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Subscriber T1"
+        allow:
+          - ViewChannel
+      - role: "Subscriber T2"
+        allow:
+          - ViewChannel
+      - role: "Subscriber T3"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "subscriber-chat"
+        type: text
+        topic: "Exclusive subscriber hangout"
+
+      - name: "behind-the-scenes"
+        type: text
+        topic: "Bloopers, drafts, and process content"
+        permissions:
+          - role: "Subscriber T1"
+            deny:
+              - SendMessages
+          - role: "Subscriber T2"
+            allow:
+              - ViewChannel
+          - role: "Subscriber T3"
+            allow:
+              - ViewChannel
+
+      - name: "early-access"
+        type: text
+        topic: "Watch content before it goes public"
+        permissions:
+          - role: "Subscriber T1"
+            deny:
+              - SendMessages
+          - role: "Subscriber T2"
+            deny:
+              - SendMessages
+          - role: "Subscriber T3"
+            allow:
+              - ViewChannel
+
+      - name: "ama"
+        type: forum
+        topic: "Ask me anything — subscriber exclusive"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Question"
+            moderated: false
+          - name: "Answered"
+            moderated: true
+            emoji: "✅"
+
+  - name: "CREATOR HUB"
+    channels:
+      - name: "self-promo"
+        type: text
+        topic: "Share your own content (1 post per day)"
+        slowmode: 21600
+
+      - name: "collabs"
+        type: forum
+        topic: "Find collaboration partners"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Looking for Collab"
+            moderated: false
+          - name: "Offering Collab"
+            moderated: false
+          - name: "Matched"
+            moderated: true
+
+      - name: "growth-tips"
+        type: text
+        topic: "Channel growth strategy and advice"
+        slowmode: 10
+
+  - name: "VOICE"
+    channels:
+      - name: "hangout"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+      - name: "subscriber-voice"
+        type: voice
+        bitrate: 128000
+        user_limit: 0
+        permissions:
+          - role: "@everyone"
+            deny:
+              - ViewChannel
+          - role: "Subscriber T1"
+            allow:
+              - ViewChannel
+              - Connect
+          - role: "Subscriber T2"
+            allow:
+              - ViewChannel
+              - Connect
+          - role: "Subscriber T3"
+            allow:
+              - ViewChannel
+              - Connect
+
+      - name: "watch-along"
+        type: voice
+        bitrate: 64000
+        user_limit: 50
+
+      - name: "community-stage"
+        type: stage
+        topic: "AMAs, community events, and live Q&A"
+
+  - name: "STAFF"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Creator"
+        allow:
+          - ViewChannel
+      - role: "Admin"
+        allow:
+          - ViewChannel
+      - role: "Moderator"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "mod-chat"
+        type: text
+        topic: "Moderator discussion"
+
+      - name: "mod-log"
+        type: text
+        topic: "Automated moderation logs"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - SendMessages
+
+      - name: "content-planning"
+        type: text
+        topic: "Content schedule and planning"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - ViewChannel
+          - role: "Creator"
+            allow:
+              - ViewChannel
+          - role: "Admin"
+            allow:
+              - ViewChannel
+
+      - name: "staff-voice"
+        type: voice
+        bitrate: 64000
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Bot commands go here"
+    slowmode: 3

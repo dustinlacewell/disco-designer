@@ -1,0 +1,31 @@
+---
+interface Props {
+  columns: string[];
+  rows: string[][];
+}
+
+const { columns, rows } = Astro.props;
+---
+
+<div class="mb-6 overflow-x-auto rounded-xl border border-border">
+  <table class="w-full min-w-[540px] text-sm">
+    <thead>
+      <tr class="bg-surface-overlay text-left text-xs uppercase tracking-wider text-text-secondary">
+        {columns.map((col) => (
+          <th class="px-4 py-3 font-medium">{col}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row, i) => (
+        <tr class={i % 2 === 1 ? "bg-surface-raised/30" : ""}>
+          {row.map((cell, j) => (
+            <td class={`border-t border-border px-4 py-2.5 ${j === 0 ? "font-mono text-blurple-light" : "text-text-secondary"}`}>
+              <Fragment set:html={cell} />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

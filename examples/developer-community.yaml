@@ -1,0 +1,363 @@
+# Developer / Tech Community Server Template
+# For open source projects, coding communities, and tech groups.
+# Heavy use of forum channels for help/Q&A (the dominant 2025-2026 pattern).
+
+roles:
+  - name: "Admin"
+    color: "#e74c3c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageChannels
+      - ManageThreads
+      - ModerateMembers
+
+  - name: "Verified Expert"
+    color: "#9b59b6"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - ManageMessages
+      - ManageThreads
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+      - CreatePublicThreads
+
+  - name: "Contributor"
+    color: "#e67e22"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+      - CreatePublicThreads
+
+  - name: "Helper"
+    color: "#1abc9c"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+      - CreatePublicThreads
+
+  - name: "Member"
+    color: "#3498db"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - AttachFiles
+      - EmbedLinks
+      - CreatePublicThreads
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - ReadMessageHistory
+
+categories:
+  - name: "INFORMATION"
+    channels:
+      - name: "rules"
+        type: text
+        topic: "Community guidelines and code of conduct"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+
+      - name: "announcements"
+        type: announcement
+        topic: "Project updates, releases, and community news"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+          - role: "Moderator"
+            allow:
+              - SendMessages
+
+      - name: "resources"
+        type: text
+        topic: "Documentation, tutorials, and useful links"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+          - role: "Verified Expert"
+            allow:
+              - SendMessages
+
+      - name: "getting-started"
+        type: text
+        topic: "New contributor? Start here"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+
+  - name: "GENERAL"
+    channels:
+      - name: "general"
+        type: text
+        topic: "General discussion"
+        slowmode: 3
+
+      - name: "introductions"
+        type: text
+        topic: "Tell us about yourself and what you're working on"
+        slowmode: 30
+
+      - name: "off-topic"
+        type: text
+        topic: "Non-tech conversation"
+
+      - name: "jobs-and-careers"
+        type: forum
+        topic: "Job postings, career advice, and interview prep"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Job Posting"
+            moderated: false
+          - name: "Seeking Work"
+            moderated: false
+          - name: "Career Advice"
+            moderated: false
+          - name: "Filled"
+            moderated: true
+
+  - name: "HELP"
+    channels:
+      - name: "help-general"
+        type: forum
+        topic: "General programming help — tag your language"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "JavaScript"
+            moderated: false
+          - name: "TypeScript"
+            moderated: false
+          - name: "Python"
+            moderated: false
+          - name: "Rust"
+            moderated: false
+          - name: "Go"
+            moderated: false
+          - name: "Other"
+            moderated: false
+          - name: "Solved"
+            moderated: false
+            emoji: "✅"
+
+      - name: "code-review"
+        type: forum
+        topic: "Request peer review on your code"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Review Requested"
+            moderated: false
+          - name: "Reviewed"
+            moderated: false
+            emoji: "✅"
+          - name: "Beginner"
+            moderated: false
+          - name: "Advanced"
+            moderated: false
+
+      - name: "debugging"
+        type: forum
+        topic: "Post errors, stack traces, and reproduction steps"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 1440
+        available_tags:
+          - name: "Bug"
+            moderated: false
+            emoji: "🐛"
+          - name: "Error Message"
+            moderated: false
+          - name: "Build Issue"
+            moderated: false
+          - name: "Solved"
+            moderated: false
+            emoji: "✅"
+
+  - name: "TOPICS"
+    channels:
+      - name: "web-dev"
+        type: text
+        topic: "Frontend, backend, and full-stack web development"
+        slowmode: 3
+
+      - name: "mobile-dev"
+        type: text
+        topic: "iOS, Android, React Native, Flutter"
+        slowmode: 3
+
+      - name: "devops"
+        type: text
+        topic: "Infrastructure, CI/CD, cloud, and containers"
+        slowmode: 3
+
+      - name: "ai-and-ml"
+        type: text
+        topic: "Artificial intelligence, machine learning, and LLMs"
+        slowmode: 3
+
+      - name: "gamedev"
+        type: text
+        topic: "Game development with Unity, Godot, Unreal, etc."
+        slowmode: 3
+
+  - name: "PROJECTS"
+    channels:
+      - name: "project-showcase"
+        type: forum
+        topic: "Show off what you've built"
+        default_sort_order: latest_activity
+        default_forum_layout: gallery
+        default_auto_archive_duration: 10080
+        available_tags:
+          - name: "Web App"
+            moderated: false
+          - name: "CLI Tool"
+            moderated: false
+          - name: "Library"
+            moderated: false
+          - name: "Game"
+            moderated: false
+          - name: "Mobile App"
+            moderated: false
+          - name: "Open Source"
+            moderated: false
+
+      - name: "open-source"
+        type: text
+        topic: "Open source contributions, projects, and collaboration"
+
+      - name: "collaboration"
+        type: forum
+        topic: "Find project partners or offer your skills"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Looking for Help"
+            moderated: false
+          - name: "Offering Help"
+            moderated: false
+          - name: "Team Forming"
+            moderated: false
+
+  - name: "VOICE"
+    channels:
+      - name: "pair-programming"
+        type: voice
+        bitrate: 96000
+        user_limit: 2
+
+      - name: "co-working"
+        type: voice
+        bitrate: 64000
+        user_limit: 0
+
+      - name: "hangout"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+      - name: "tech-talk"
+        type: stage
+        topic: "Community tech talks, demos, and presentations"
+
+  - name: "STAFF"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Admin"
+        allow:
+          - ViewChannel
+      - role: "Moderator"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "mod-chat"
+        type: text
+        topic: "Staff discussion"
+
+      - name: "mod-log"
+        type: text
+        topic: "Automated moderation logs"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - SendMessages
+
+      - name: "contributor-management"
+        type: text
+        topic: "Track contributor roles, expert verifications"
+
+      - name: "staff-voice"
+        type: voice
+        bitrate: 64000
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Bot commands and integrations"
+    slowmode: 3

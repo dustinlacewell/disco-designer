@@ -1,0 +1,560 @@
+---
+import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import DocsSidebar from "../components/docs/DocsSidebar.astro";
+import DocsSection from "../components/docs/DocsSection.astro";
+import DocsTable from "../components/docs/DocsTable.astro";
+import DocsCode from "../components/docs/DocsCode.astro";
+import DocsCallout from "../components/docs/DocsCallout.astro";
+
+const sections = [
+  { id: "introduction", title: "Introduction", level: 2 as const },
+  { id: "template-structure", title: "Template Structure", level: 2 as const },
+  { id: "roles", title: "Roles", level: 2 as const },
+  { id: "everyone-role", title: "@everyone", level: 3 as const },
+  { id: "permission-names", title: "Permission Names", level: 3 as const },
+  { id: "categories", title: "Categories", level: 2 as const },
+  { id: "channels", title: "Channels", level: 2 as const },
+  { id: "text-channels", title: "Text Channels", level: 3 as const },
+  { id: "voice-channels", title: "Voice Channels", level: 3 as const },
+  { id: "forum-channels", title: "Forum Channels", level: 3 as const },
+  { id: "stage-channels", title: "Stage Channels", level: 3 as const },
+  { id: "announcement-channels", title: "Announcement Channels", level: 3 as const },
+  { id: "permission-overwrites", title: "Permission Overwrites", level: 2 as const },
+  { id: "emoji", title: "Emoji", level: 2 as const },
+  { id: "sync-behavior", title: "Sync Behavior", level: 2 as const },
+  { id: "preflight-checks", title: "Preflight Checks", level: 2 as const },
+  { id: "limits", title: "Limits & Constraints", level: 2 as const },
+];
+
+// ── Helpers for hand-highlighted YAML ──
+const k = (s: string) => `<span class="yaml-key">${s}</span>`;
+const s = (s: string) => `<span class="yaml-string">${s}</span>`;
+const p = (s: string) => `<span class="yaml-punct">${s}</span>`;
+const b = (s: string) => `<span class="yaml-bool">${s}</span>`;
+const n = (s: string) => `<span class="yaml-number">${s}</span>`;
+const c = (s: string) => `<span class="yaml-comment">${s}</span>`;
+
+// ── Code blocks ──
+const codeTemplateStructure = `${k("roles")}${p(":")}         ${c("# Role definitions")}
+  - ${k("name")}${p(":")} ${s('"Admin"')}
+    ${c("# ...")}
+
+${k("categories")}${p(":")}    ${c("# Category groups with channels")}
+  - ${k("name")}${p(":")} ${s('"General"')}
+    ${k("channels")}${p(":")}
+      - ${k("name")}${p(":")} ${s('"general"')}
+        ${k("type")}${p(":")} ${s("text")}
+
+${k("uncategorized")}${p(":")} ${c("# Channels outside any category")}
+  - ${k("name")}${p(":")} ${s('"bot-commands"')}
+    ${k("type")}${p(":")} ${s("text")}
+
+${k("emoji")}${p(":")}         ${c("# Custom emoji to upload")}
+  - ${k("name")}${p(":")} ${s('"wave"')}
+    ${k("image")}${p(":")} ${s('"https://example.com/wave.png"')}`;
+
+const codeRoles = `${k("roles")}${p(":")}
+  - ${k("name")}${p(":")} ${s('"Admin"')}
+    ${k("color")}${p(":")} ${s('"#e74c3c"')}
+    ${k("hoist")}${p(":")} ${b("true")}
+    ${k("mentionable")}${p(":")} ${b("false")}
+    ${k("permissions")}${p(":")}
+      - ${s("Administrator")}
+
+  - ${k("name")}${p(":")} ${s('"Member"')}
+    ${k("color")}${p(":")} ${s('"#3498db"')}
+    ${k("permissions")}${p(":")}
+      - ${s("ViewChannel")}
+      - ${s("SendMessages")}
+      - ${s("ReadMessageHistory")}
+      - ${s("Connect")}
+      - ${s("Speak")}`;
+
+const codeEveryone = `${k("roles")}${p(":")}
+  - ${k("name")}${p(":")} ${s('"@everyone"')}
+    ${k("permissions")}${p(":")}
+      - ${s("ViewChannel")}
+      - ${s("ReadMessageHistory")}
+      - ${s("SendMessages")}`;
+
+const codeCategories = `${k("categories")}${p(":")}
+  - ${k("name")}${p(":")} ${s('"PUBLIC"')}
+    ${k("permissions")}${p(":")}
+      - ${k("role")}${p(":")} ${s('"@everyone"')}
+        ${k("allow")}${p(":")}
+          - ${s("ViewChannel")}
+    ${k("channels")}${p(":")}
+      - ${k("name")}${p(":")} ${s('"general"')}
+        ${k("type")}${p(":")} ${s("text")}
+      - ${k("name")}${p(":")} ${s('"voice-chat"')}
+        ${k("type")}${p(":")} ${s("voice")}
+
+  - ${k("name")}${p(":")} ${s('"STAFF ONLY"')}
+    ${k("permissions")}${p(":")}
+      - ${k("role")}${p(":")} ${s('"@everyone"')}
+        ${k("deny")}${p(":")}
+          - ${s("ViewChannel")}
+      - ${k("role")}${p(":")} ${s('"Admin"')}
+        ${k("allow")}${p(":")}
+          - ${s("ViewChannel")}
+    ${k("channels")}${p(":")}
+      - ${k("name")}${p(":")} ${s('"mod-chat"')}
+        ${k("type")}${p(":")} ${s("text")}`;
+
+const codeTextChannel = `- ${k("name")}${p(":")} ${s('"general"')}
+  ${k("type")}${p(":")} ${s("text")}
+  ${k("topic")}${p(":")} ${s('"Main discussion channel"')}
+  ${k("slowmode")}${p(":")} ${n("5")}`;
+
+const codeVoiceChannel = `- ${k("name")}${p(":")} ${s('"Gaming"')}
+  ${k("type")}${p(":")} ${s("voice")}
+  ${k("bitrate")}${p(":")} ${n("128000")}
+  ${k("user_limit")}${p(":")} ${n("8")}`;
+
+const codeForumChannel = `- ${k("name")}${p(":")} ${s('"help"')}
+  ${k("type")}${p(":")} ${s("forum")}
+  ${k("topic")}${p(":")} ${s('"Ask for help here"')}
+  ${k("default_sort_order")}${p(":")} ${s("latest_activity")}
+  ${k("default_forum_layout")}${p(":")} ${s("list")}
+  ${k("default_auto_archive_duration")}${p(":")} ${n("4320")}
+  ${k("available_tags")}${p(":")}
+    - ${k("name")}${p(":")} ${s('"Solved"')}
+      ${k("emoji")}${p(":")} ${s('"✅"')}
+    - ${k("name")}${p(":")} ${s('"Bug"')}
+      ${k("emoji")}${p(":")} ${s('"🐛"')}
+      ${k("moderated")}${p(":")} ${b("true")}`;
+
+const codeStageChannel = `- ${k("name")}${p(":")} ${s('"town-hall"')}
+  ${k("type")}${p(":")} ${s("stage")}
+  ${k("topic")}${p(":")} ${s('"Weekly community Q&amp;A"')}`;
+
+const codeAnnouncementChannel = `- ${k("name")}${p(":")} ${s('"announcements"')}
+  ${k("type")}${p(":")} ${s("announcement")}
+  ${k("topic")}${p(":")} ${s('"Important server news"')}`;
+
+const codeOverwrites = `- ${k("name")}${p(":")} ${s('"rules"')}
+  ${k("type")}${p(":")} ${s("text")}
+  ${k("topic")}${p(":")} ${s('"Server rules — read before posting"')}
+  ${k("permissions")}${p(":")}
+    - ${k("role")}${p(":")} ${s('"@everyone"')}
+      ${k("deny")}${p(":")}
+        - ${s("SendMessages")}
+    - ${k("role")}${p(":")} ${s('"Moderator"')}
+      ${k("allow")}${p(":")}
+        - ${s("SendMessages")}
+        - ${s("ManageMessages")}`;
+
+const codeEmoji = `${k("emoji")}${p(":")}
+  - ${k("name")}${p(":")} ${s('"pepe_thumbsup"')}
+    ${k("image")}${p(":")} ${s('"https://example.com/pepe_thumbsup.png"')}
+  - ${k("name")}${p(":")} ${s('"server_logo"')}
+    ${k("image")}${p(":")} ${s('"https://example.com/logo.png"')}`;
+
+// ── Table data ──
+const roleFields = [
+  ["name", "string", "Yes", "&mdash;", "Role name (1&ndash;100 chars)"],
+  ["color", "string", "No", "<code>#000000</code>", "Hex color, e.g. <code>#e74c3c</code>"],
+  ["hoist", "boolean", "No", "<code>false</code>", "Show separately in member list"],
+  ["mentionable", "boolean", "No", "<code>false</code>", "Allow anyone to @mention this role"],
+  ["permissions", "string[]", "No", "<code>[]</code>", "List of permission names"],
+];
+
+const categoryFields = [
+  ["name", "string", "Yes", "&mdash;", "Category name (1&ndash;100 chars)"],
+  ["permissions", "overwrite[]", "No", "<code>[]</code>", "Permission overwrites for this category"],
+  ["channels", "channel[]", "No", "<code>[]</code>", "Channels inside this category"],
+];
+
+const channelFields = [
+  ["name", "string", "Yes", "&mdash;", "Channel name (1&ndash;100 chars)"],
+  ["type", "enum", "Yes", "&mdash;", "<code>text</code>, <code>voice</code>, <code>forum</code>, <code>stage</code>, or <code>announcement</code>"],
+  ["topic", "string", "No", "&mdash;", "Channel topic (max 1024 chars)"],
+  ["slowmode", "integer", "No", "&mdash;", "Slowmode in seconds (0&ndash;21600)"],
+  ["nsfw", "boolean", "No", "<code>false</code>", "Age-restricted channel"],
+  ["bitrate", "integer", "No", "&mdash;", "Audio bitrate in bps (8000&ndash;384000)"],
+  ["user_limit", "integer", "No", "&mdash;", "Max users, 0 = unlimited (0&ndash;99)"],
+  ["permissions", "overwrite[]", "No", "<code>[]</code>", "Channel-specific permission overwrites"],
+];
+
+const forumFields = [
+  ["default_sort_order", "enum", "No", "&mdash;", "<code>latest_activity</code> or <code>creation_date</code>"],
+  ["default_forum_layout", "enum", "No", "&mdash;", "<code>list</code> or <code>gallery</code>"],
+  ["default_reaction_emoji", "string", "No", "&mdash;", "Unicode emoji or custom emoji snowflake ID"],
+  ["default_thread_rate_limit", "integer", "No", "&mdash;", "Per-thread slowmode (0&ndash;21600 sec)"],
+  ["default_auto_archive_duration", "integer", "No", "&mdash;", "<code>60</code>, <code>1440</code>, <code>4320</code>, or <code>10080</code> minutes"],
+  ["available_tags", "tag[]", "No", "&mdash;", "Up to 20 forum tags"],
+];
+
+const tagFields = [
+  ["name", "string", "Yes", "&mdash;", "Tag name (1&ndash;20 chars)"],
+  ["moderated", "boolean", "No", "<code>false</code>", "Only moderators can apply this tag"],
+  ["emoji", "string", "No", "&mdash;", "Unicode emoji or custom emoji snowflake ID"],
+];
+
+const overwriteFields = [
+  ["role", "string", "Yes", "&mdash;", "Role name to target (must exist in <code>roles</code> or be <code>@everyone</code>)"],
+  ["allow", "string[]", "No", "<code>[]</code>", "Permissions to explicitly allow"],
+  ["deny", "string[]", "No", "<code>[]</code>", "Permissions to explicitly deny"],
+];
+
+const emojiFields = [
+  ["name", "string", "Yes", "&mdash;", "Emoji name (2&ndash;32 chars, alphanumeric + underscores)"],
+  ["image", "string (URL)", "Yes", "&mdash;", "Direct URL to image file (PNG, GIF, JPEG)"],
+];
+
+const limitsRows = [
+  ["Channels per server", "500", "Includes categories"],
+  ["Channels per category", "50", ""],
+  ["Categories", "50", ""],
+  ["Roles", "250", "Includes managed/bot roles"],
+  ["Emoji &mdash; Tier 0", "50", "No boosts"],
+  ["Emoji &mdash; Tier 1", "100", "2 boosts"],
+  ["Emoji &mdash; Tier 2", "150", "7 boosts"],
+  ["Emoji &mdash; Tier 3", "250", "14 boosts"],
+  ["Bitrate &mdash; Tier 0", "96 kbps", ""],
+  ["Bitrate &mdash; Tier 1", "128 kbps", ""],
+  ["Bitrate &mdash; Tier 2", "256 kbps", ""],
+  ["Bitrate &mdash; Tier 3", "384 kbps", ""],
+  ["Slowmode range", "0&ndash;21600 sec", "0 = disabled, max = 6 hours"],
+  ["Voice user limit", "0&ndash;99", "0 = unlimited"],
+  ["Channel name", "1&ndash;100 chars", ""],
+  ["Role name", "1&ndash;100 chars", ""],
+  ["Topic length", "0&ndash;1024 chars", ""],
+  ["Emoji name", "2&ndash;32 chars", "Alphanumeric + underscores only"],
+  ["Forum tags per channel", "20", ""],
+  ["Tag name", "1&ndash;20 chars", ""],
+  ["Auto-archive duration", "60, 1440, 4320, 10080", "Minutes (1h, 1d, 3d, 7d)"],
+  ["Template file size", "1 MB", ".yaml or .yml"],
+];
+---
+
+<Layout title="Docs — Disco Designer" description="Complete reference for Disco Designer YAML templates.">
+  <Navbar />
+  <div class="mx-auto max-w-7xl px-6 py-12 lg:grid lg:grid-cols-[240px_1fr] lg:gap-12">
+    <DocsSidebar sections={sections} />
+
+    <main class="docs-prose min-w-0">
+
+      <!-- ─── Introduction ─── -->
+      <DocsSection id="introduction" title="Introduction">
+        <p>
+          <strong>Disco Designer</strong> is a Discord bot that takes a YAML template describing
+          your ideal server setup and syncs your server to match. Roles, channels, categories,
+          permissions, and emoji &mdash; all defined declaratively in a single file.
+        </p>
+        <p>
+          Upload your template with the <code>/apply-template</code> slash command. The bot runs
+          preflight safety checks, shows you a summary of what will change, and asks for
+          confirmation before applying anything.
+        </p>
+        <DocsCallout type="danger" title="Full sync is destructive">
+          <p>
+            Disco Designer performs a <strong>full sync</strong>. Anything in your server that is
+            <em>not</em> in the template will be deleted &mdash; roles, channels, and emoji.
+            Managed roles (bot roles, Nitro Booster) are automatically preserved.
+          </p>
+        </DocsCallout>
+      </DocsSection>
+
+      <!-- ─── Template Structure ─── -->
+      <DocsSection id="template-structure" title="Template Structure">
+        <p>
+          A template has four top-level keys. All are optional &mdash; omit any section you
+          don't need.
+        </p>
+        <DocsCode filename="template.yaml" code={codeTemplateStructure} />
+      </DocsSection>
+
+      <!-- ─── Roles ─── -->
+      <DocsSection id="roles" title="Roles">
+        <p>
+          Each entry in <code>roles</code> defines a server role. Roles are created, updated,
+          and reordered to match the template. Roles not in the template are deleted (except
+          managed roles).
+        </p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={roleFields}
+        />
+        <DocsCode code={codeRoles} />
+        <p>
+          Roles are ordered top-to-bottom in the template, with the first role being the
+          highest in the hierarchy. The bot will reorder roles to match.
+        </p>
+      </DocsSection>
+
+      <!-- ─── @everyone ─── -->
+      <DocsSection id="everyone-role" title="@everyone" level={3}>
+        <p>
+          Use the special name <code>@everyone</code> to configure the server's default role.
+          Only <code>permissions</code> is meaningful &mdash; <code>color</code>,
+          <code>hoist</code>, and <code>mentionable</code> are ignored.
+        </p>
+        <DocsCode code={codeEveryone} />
+      </DocsSection>
+
+      <!-- ─── Permission Names ─── -->
+      <DocsSection id="permission-names" title="Permission Names" level={3}>
+        <p>
+          The following 49 permission names can be used in role <code>permissions</code> arrays
+          and in permission overwrite <code>allow</code>/<code>deny</code> arrays.
+        </p>
+
+        <div class="mb-6">
+          <h4 class="mb-2 text-sm font-semibold text-text-primary">General</h4>
+          <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+            {["CreateInstantInvite", "ManageChannels", "ManageGuild", "ViewChannel", "ViewAuditLog", "ViewGuildInsights", "ManageRoles", "ManageWebhooks", "ManageEmojisAndStickers", "ManageEvents", "Administrator"].map((p) => (
+              <code class="block rounded bg-surface-raised px-2 py-1 text-xs">{p}</code>
+            ))}
+          </div>
+
+          <h4 class="mb-2 text-sm font-semibold text-text-primary">Messages</h4>
+          <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+            {["SendMessages", "SendTTSMessages", "ManageMessages", "EmbedLinks", "AttachFiles", "ReadMessageHistory", "MentionEveryone", "UseExternalEmojis", "UseExternalStickers", "AddReactions", "UseApplicationCommands", "SendPolls"].map((perm) => (
+              <code class="block rounded bg-surface-raised px-2 py-1 text-xs">{perm}</code>
+            ))}
+          </div>
+
+          <h4 class="mb-2 text-sm font-semibold text-text-primary">Threads</h4>
+          <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+            {["ManageThreads", "CreatePublicThreads", "CreatePrivateThreads", "SendMessagesInThreads"].map((perm) => (
+              <code class="block rounded bg-surface-raised px-2 py-1 text-xs">{perm}</code>
+            ))}
+          </div>
+
+          <h4 class="mb-2 text-sm font-semibold text-text-primary">Voice</h4>
+          <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+            {["Connect", "Speak", "MuteMembers", "DeafenMembers", "MoveMembers", "UseVAD", "PrioritySpeaker", "Stream", "UseSoundboard", "UseExternalSounds", "SendVoiceMessages", "UseEmbeddedActivities", "RequestToSpeak"].map((perm) => (
+              <code class="block rounded bg-surface-raised px-2 py-1 text-xs">{perm}</code>
+            ))}
+          </div>
+
+          <h4 class="mb-2 text-sm font-semibold text-text-primary">Moderation</h4>
+          <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3 mb-4">
+            {["KickMembers", "BanMembers", "ModerateMembers", "ManageNicknames", "ChangeNickname"].map((perm) => (
+              <code class="block rounded bg-surface-raised px-2 py-1 text-xs">{perm}</code>
+            ))}
+          </div>
+        </div>
+      </DocsSection>
+
+      <!-- ─── Categories ─── -->
+      <DocsSection id="categories" title="Categories">
+        <p>
+          Categories group channels together. Each category can have its own permission
+          overwrites that cascade to child channels (unless the channel defines its own).
+        </p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={categoryFields}
+        />
+        <DocsCode code={codeCategories} />
+        <p>
+          Categories are ordered top-to-bottom in the template. Categories not in the template
+          are deleted after their channels have been moved or removed.
+        </p>
+      </DocsSection>
+
+      <!-- ─── Channels ─── -->
+      <DocsSection id="channels" title="Channels">
+        <p>
+          Channels live inside <code>categories[].channels</code> or in the top-level
+          <code>uncategorized</code> array. All channels share these common fields:
+        </p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={channelFields}
+        />
+        <DocsCallout type="info">
+          <p>
+            Not all fields apply to all channel types. <code>bitrate</code> and
+            <code>user_limit</code> only apply to voice and stage channels.
+            <code>slowmode</code> only applies to text channels. Forum-specific fields are
+            listed below.
+          </p>
+        </DocsCallout>
+      </DocsSection>
+
+      <!-- ─── Text Channels ─── -->
+      <DocsSection id="text-channels" title="Text Channels" level={3}>
+        <p>Standard text channels. Support <code>topic</code>, <code>slowmode</code>, <code>nsfw</code>, and <code>permissions</code>.</p>
+        <DocsCode code={codeTextChannel} />
+      </DocsSection>
+
+      <!-- ─── Voice Channels ─── -->
+      <DocsSection id="voice-channels" title="Voice Channels" level={3}>
+        <p>
+          Voice channels support <code>bitrate</code> and <code>user_limit</code>. The bitrate
+          is automatically clamped to the server's boost tier maximum.
+        </p>
+        <DocsCode code={codeVoiceChannel} />
+      </DocsSection>
+
+      <!-- ─── Forum Channels ─── -->
+      <DocsSection id="forum-channels" title="Forum Channels" level={3}>
+        <p>
+          Forum channels support all the common fields plus these forum-specific fields:
+        </p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={forumFields}
+        />
+        <p>Each <strong>forum tag</strong> in <code>available_tags</code> has:</p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={tagFields}
+        />
+        <DocsCode code={codeForumChannel} />
+      </DocsSection>
+
+      <!-- ─── Stage Channels ─── -->
+      <DocsSection id="stage-channels" title="Stage Channels" level={3}>
+        <p>
+          Stage channels are speaker-audience voice channels. They support <code>topic</code>,
+          <code>bitrate</code>, and <code>user_limit</code>.
+        </p>
+        <DocsCallout type="warning">
+          <p>
+            Stage channels require the <strong>Community</strong> server feature. If the server
+            doesn't have Community enabled, stage channels will be created as regular voice
+            channels instead.
+          </p>
+        </DocsCallout>
+        <DocsCode code={codeStageChannel} />
+      </DocsSection>
+
+      <!-- ─── Announcement Channels ─── -->
+      <DocsSection id="announcement-channels" title="Announcement Channels" level={3}>
+        <p>
+          Announcement (news) channels can be followed by other servers. They support
+          <code>topic</code> and <code>slowmode</code>.
+        </p>
+        <DocsCallout type="warning">
+          <p>
+            Announcement channels require the <strong>Community</strong> server feature. If the
+            server doesn't have Community enabled, they will be created as regular text channels
+            instead.
+          </p>
+        </DocsCallout>
+        <DocsCode code={codeAnnouncementChannel} />
+      </DocsSection>
+
+      <!-- ─── Permission Overwrites ─── -->
+      <DocsSection id="permission-overwrites" title="Permission Overwrites">
+        <p>
+          Permission overwrites are channel-level or category-level overrides that grant or deny
+          specific permissions to a role. They are different from <strong>role permissions</strong>,
+          which apply server-wide.
+        </p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={overwriteFields}
+        />
+        <DocsCallout type="info">
+          <p>
+            Omitting a permission from both <code>allow</code> and <code>deny</code> means
+            "inherit" &mdash; the permission falls through to the role's server-wide setting or
+            the parent category's overwrite.
+          </p>
+        </DocsCallout>
+        <p>Example: a read-only rules channel where only moderators can post:</p>
+        <DocsCode code={codeOverwrites} />
+      </DocsSection>
+
+      <!-- ─── Emoji ─── -->
+      <DocsSection id="emoji" title="Emoji">
+        <p>
+          Define custom emoji to upload to the server. Emoji are matched by name &mdash; if a
+          custom emoji with the same name already exists, it is kept as-is.
+        </p>
+        <DocsTable
+          columns={["Field", "Type", "Required", "Default", "Description"]}
+          rows={emojiFields}
+        />
+        <DocsCode code={codeEmoji} />
+        <DocsCallout type="info">
+          <p>
+            Emoji not in the template are deleted. Managed emoji (from integrations) are
+            automatically skipped. The maximum number of emoji depends on the server's boost
+            tier (see <a href="#limits">Limits</a>).
+          </p>
+        </DocsCallout>
+      </DocsSection>
+
+      <!-- ─── Sync Behavior ─── -->
+      <DocsSection id="sync-behavior" title="Sync Behavior">
+        <p>
+          When you run <code>/apply-template</code>, the bot syncs your server in five phases:
+        </p>
+        <ol>
+          <li><strong>Roles</strong> &mdash; Delete extra roles, create missing ones, update changed properties, reorder to match template</li>
+          <li><strong>Categories</strong> &mdash; Create missing categories, update existing ones, apply permission overwrites</li>
+          <li><strong>Channels</strong> &mdash; Delete extra channels, create missing ones, update properties and permissions, reorder within categories</li>
+          <li><strong>Cleanup</strong> &mdash; Remove categories that are no longer in the template (after their children have been moved or deleted)</li>
+          <li><strong>Emoji</strong> &mdash; Delete extra emoji, create missing ones</li>
+        </ol>
+        <DocsCallout type="danger" title="Destructive sync">
+          <p>
+            Everything not in the template gets deleted. This includes roles, channels,
+            categories, and custom emoji. The following are always preserved:
+          </p>
+          <ul>
+            <li><strong>Managed roles</strong> &mdash; bot roles, Nitro Booster, integration roles</li>
+            <li><strong>Managed emoji</strong> &mdash; emoji from integrations</li>
+            <li><strong>Threads</strong> &mdash; threads inside surviving channels are untouched</li>
+          </ul>
+        </DocsCallout>
+        <p>
+          Only one sync can run per server at a time. If errors occur during a phase, the bot
+          continues with the remaining phases and reports all errors at the end.
+        </p>
+        <p><strong>Confirmation flow:</strong></p>
+        <ol>
+          <li>Upload your <code>.yaml</code> file with <code>/apply-template</code></li>
+          <li>Bot validates the file and runs preflight checks</li>
+          <li>Bot shows a summary of planned changes (creates, updates, deletes)</li>
+          <li>Click <strong>Confirm</strong> to apply, or <strong>Cancel</strong> to abort</li>
+        </ol>
+      </DocsSection>
+
+      <!-- ─── Preflight Checks ─── -->
+      <DocsSection id="preflight-checks" title="Preflight Checks">
+        <p>
+          Before syncing, the bot validates your template and the server state. Issues are
+          reported as <strong>errors</strong> (which block the sync) or <strong>warnings</strong>
+          (which allow you to proceed).
+        </p>
+        <p><strong>Errors</strong> (sync blocked):</p>
+        <ul>
+          <li>Bot is missing required permissions (<code>ManageRoles</code>, <code>ManageChannels</code>, <code>ViewChannel</code>)</li>
+          <li>Bot's role is too low in the hierarchy to manage template roles</li>
+          <li>Bot doesn't have a permission it needs to grant to a role</li>
+          <li>Template exceeds Discord channel or emoji limits</li>
+          <li>Template has emoji but bot lacks <code>ManageEmojisAndStickers</code></li>
+        </ul>
+        <p><strong>Warnings</strong> (sync continues):</p>
+        <ul>
+          <li>Server lacks Community feature &mdash; announcement channels fall back to text, stage channels fall back to voice</li>
+          <li>Some existing channels are inaccessible to the bot (can't be deleted if needed)</li>
+        </ul>
+      </DocsSection>
+
+      <!-- ─── Limits ─── -->
+      <DocsSection id="limits" title="Limits & Constraints">
+        <p>
+          Discord enforces hard limits on servers. The bot checks these during preflight and
+          will block the sync if your template would exceed them.
+        </p>
+        <DocsTable
+          columns={["Limit", "Value", "Notes"]}
+          rows={limitsRows}
+        />
+      </DocsSection>
+
+    </main>
+  </div>
+  <Footer />
+</Layout>

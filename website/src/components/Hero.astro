@@ -1,0 +1,63 @@
+---
+const github = "https://github.com/dustinlacewell/disco-designer";
+const invite = "https://discord.com/oauth2/authorize?client_id=1476885786686263379&permissions=8&integration_type=0&scope=bot+applications.commands";
+---
+
+<section class="relative overflow-hidden px-6 py-24 sm:py-32 lg:py-40">
+  <!-- Blurple glow -->
+  <div class="pointer-events-none absolute inset-0 flex items-center justify-center">
+    <div class="h-[500px] w-[500px] rounded-full bg-blurple/10 blur-3xl"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-4xl text-center">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-blurple/30 bg-blurple/10 px-4 py-1.5 text-sm text-blurple-light">
+      Open Source &middot; MIT License
+    </div>
+
+    <h1 class="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+      Your Discord server,<br />
+      <span class="text-blurple">defined in YAML.</span>
+    </h1>
+
+    <p class="mx-auto mt-6 max-w-2xl text-lg text-text-secondary sm:text-xl leading-relaxed">
+      Disco Designer reads a YAML template and syncs your entire Discord server
+      to match &mdash; roles, channels, permissions, and emoji. No code required.
+    </p>
+
+    <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+      <a
+        href={invite}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 rounded-xl bg-blurple px-8 py-3 font-semibold text-white shadow-lg shadow-blurple/25 transition-colors hover:bg-blurple-dark"
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 00-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 00-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95 0 .02.01.04.03.05 1.8 1.32 3.53 2.12 5.24 2.65.02.01.05 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.04.03.04.09-.01.11-.52.31-1.07.56-1.64.78-.04.01-.05.06-.04.09.32.61.68 1.19 1.07 1.74.03.01.05.02.07.02 1.72-.53 3.45-1.33 5.24-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.83 2.12-1.89 2.12z" />
+        </svg>
+        Add to Server
+      </a>
+      <a
+        href={github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="rounded-xl border border-border px-8 py-3 font-semibold text-text-primary transition-colors hover:bg-surface-raised"
+      >
+        View on GitHub
+      </a>
+    </div>
+
+    <!-- Mini YAML preview -->
+    <div class="mx-auto mt-16 max-w-md">
+      <pre class="rounded-xl border border-border bg-surface-raised/80 p-5 text-left font-mono text-sm leading-relaxed shadow-2xl backdrop-blur"><code><span class="yaml-key">roles</span><span class="yaml-punct">:</span>
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"Admin"</span>
+    <span class="yaml-key">color</span><span class="yaml-punct">:</span> <span class="yaml-string">"#e74c3c"</span>
+    <span class="yaml-key">permissions</span><span class="yaml-punct">:</span> [<span class="yaml-string">Administrator</span>]
+
+<span class="yaml-key">categories</span><span class="yaml-punct">:</span>
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"GENERAL"</span>
+    <span class="yaml-key">channels</span><span class="yaml-punct">:</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"general"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">text</span></code></pre>
+    </div>
+  </div>
+</section>

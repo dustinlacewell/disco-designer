@@ -1,0 +1,78 @@
+---
+interface TocItem {
+  id: string;
+  title: string;
+  level: 2 | 3;
+}
+
+interface Props {
+  sections: TocItem[];
+}
+
+const { sections } = Astro.props;
+---
+
+<!-- Mobile TOC -->
+<div class="mb-8 lg:hidden">
+  <details class="rounded-xl border border-border bg-surface-raised">
+    <summary class="cursor-pointer px-4 py-3 text-sm font-medium text-text-secondary select-none">
+      On this page
+    </summary>
+    <nav class="border-t border-border px-4 py-3">
+      <ul class="space-y-1">
+        {sections.map((s) => (
+          <li>
+            <a
+              href={`#${s.id}`}
+              class={`block rounded-lg px-3 py-1.5 text-sm text-text-secondary transition-colors hover:text-text-primary ${s.level === 3 ? "pl-6" : ""}`}
+            >
+              {s.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </details>
+</div>
+
+<!-- Desktop TOC -->
+<aside class="hidden lg:block">
+  <nav class="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto">
+    <p class="mb-3 text-xs font-medium uppercase tracking-wider text-text-secondary">On this page</p>
+    <ul class="space-y-0.5 border-l border-border">
+      {sections.map((s) => (
+        <li>
+          <a
+            href={`#${s.id}`}
+            data-toc-link={s.id}
+            class={`block border-l-2 border-transparent py-1.5 text-sm text-text-secondary transition-colors hover:border-blurple hover:text-text-primary ${s.level === 3 ? "pl-6" : "pl-4"}`}
+          >
+            {s.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          document.querySelectorAll("[data-toc-link]").forEach((a) => {
+            a.classList.remove("!text-text-primary", "!border-blurple");
+          });
+          const link = document.querySelector(
+            `[data-toc-link="${entry.target.id}"]`
+          );
+          if (link) {
+            link.classList.add("!text-text-primary", "!border-blurple");
+          }
+        }
+      }
+    },
+    { rootMargin: "-80px 0px -80% 0px" }
+  );
+  document.querySelectorAll("section[id]").forEach((s) => observer.observe(s));
+</script>

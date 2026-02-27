@@ -1,0 +1,166 @@
+# Example: Community Discord Server Template
+
+roles:
+  - name: "Admin"
+    color: "#e74c3c"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageChannels
+      - MuteMembers
+      - DeafenMembers
+      - MoveMembers
+      - ModerateMembers
+
+  - name: "Member"
+    color: "#3498db"
+    hoist: false
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - AttachFiles
+      - EmbedLinks
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - ReadMessageHistory
+
+categories:
+  - name: "INFORMATION"
+    channels:
+      - name: "rules"
+        type: text
+        topic: "Server rules and guidelines — please read before posting"
+        slowmode: 0
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Moderator"
+            allow:
+              - SendMessages
+              - ManageMessages
+
+      - name: "announcements"
+        type: announcement
+        topic: "Official server announcements"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Admin"
+            allow:
+              - SendMessages
+              - ManageMessages
+
+  - name: "GENERAL"
+    channels:
+      - name: "general"
+        type: text
+        topic: "General chat — keep it friendly!"
+        slowmode: 5
+
+      - name: "off-topic"
+        type: text
+        topic: "Anything goes (within reason)"
+
+      - name: "media"
+        type: text
+        topic: "Share images, videos, and links"
+        slowmode: 10
+
+  - name: "VOICE"
+    channels:
+      - name: "general-voice"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+      - name: "gaming"
+        type: voice
+        bitrate: 96000
+        user_limit: 10
+
+      - name: "music"
+        type: voice
+        bitrate: 128000
+        user_limit: 5
+
+      - name: "community-stage"
+        type: stage
+        topic: "Community events and AMAs"
+
+  - name: "COMMUNITY"
+    channels:
+      - name: "introductions"
+        type: text
+        topic: "Introduce yourself to the community!"
+        slowmode: 30
+
+      - name: "feedback"
+        type: forum
+        topic: "Share your feedback and suggestions"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Bug"
+            moderated: false
+            emoji: "🐛"
+          - name: "Suggestion"
+            moderated: false
+            emoji: "💡"
+          - name: "Resolved"
+            moderated: true
+            emoji: "✅"
+
+  - name: "ADMIN"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Admin"
+        allow:
+          - ViewChannel
+      - role: "Moderator"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "mod-chat"
+        type: text
+        topic: "Moderator discussion — keep it professional"
+
+      - name: "mod-logs"
+        type: text
+        topic: "Automated moderation logs"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - SendMessages
+
+      - name: "mod-voice"
+        type: voice
+        bitrate: 64000
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Use bot commands here"
+    slowmode: 3

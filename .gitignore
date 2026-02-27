@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+*.log
+.claude/
+
+# Website
+website/node_modules/
+website/dist/
+website/.astro/
