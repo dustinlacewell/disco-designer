@@ -1,6 +1,4 @@
 ---
-const github = "https://github.com/dustinlacewell/disco-designer";
-
 const templates = [
   {
     file: "gaming-community.yaml",
@@ -69,9 +67,7 @@ const templates = [
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {templates.map((t) => (
         <a
-          href={`${github}/blob/main/examples/${t.file}`}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`/editor?template=${t.file}`}
           class="group rounded-2xl border border-border bg-surface-raised p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-blurple/30 hover:shadow-lg hover:shadow-blurple/5"
         >
           <div class="mb-3 flex items-center gap-3">

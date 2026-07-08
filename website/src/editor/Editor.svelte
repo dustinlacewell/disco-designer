@@ -5,6 +5,7 @@
   import OutputPanel from './components/OutputPanel.svelte';
   import Resizer from './primitives/Resizer.svelte';
   import { store } from './store.svelte.js';
+  import { EXAMPLES } from './examples.js';
 
   type View = 'outline' | 'edit' | 'output';
   let view = $state<View>('edit');
@@ -46,6 +47,18 @@
   // Persist the full editor state (document, selection, output tab) on any change.
   $effect(() => {
     store.save();
+  });
+
+  // Load a template linked from the homepage (?template=<file>), then drop the param so a
+  // later refresh doesn't clobber the user's in-progress edits.
+  $effect(() => {
+    const url = new URL(window.location.href);
+    const templateFile = url.searchParams.get('template');
+    if (!templateFile) return;
+    const example = EXAMPLES.find((e) => e.file === templateFile);
+    if (example) store.importYaml(example.yaml);
+    url.searchParams.delete('template');
+    history.replaceState(null, '', url);
   });
 </script>
 
