@@ -18,7 +18,7 @@ export async function syncRoles(ctx: SyncContext): Promise<void> {
   if (botMember) {
     const botHighestRole = botMember.roles.highest;
     logger.info(`Bot's highest role: "${botHighestRole.name}" (position ${botHighestRole.position})`);
-    if (botHighestRole.position <= 1) {
+    if (botHighestRole.position <= 0) {
       logger.warn(
         'Bot role is at the bottom of the hierarchy. ' +
         'Drag the bot\'s role higher in Server Settings > Roles to manage other roles.',

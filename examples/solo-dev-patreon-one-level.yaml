@@ -1,0 +1,283 @@
+# Solo Dev Patreon Server Template (One Tier)
+# For an independent developer who ships software and monetizes via a single Patreon tier.
+# One supporter level gets everything — no tier FOMO, just community and perks.
+
+roles:
+  - name: "Developer"
+    color: "#5865f2"
+    hoist: true
+    mentionable: false
+    permissions:
+      - Administrator
+
+  - name: "Moderator"
+    color: "#2ecc71"
+    hoist: true
+    mentionable: true
+    permissions:
+      - KickMembers
+      - BanMembers
+      - ManageMessages
+      - ManageThreads
+      - ModerateMembers
+
+  - name: "Supporter"
+    color: "#f39c12"
+    hoist: true
+    mentionable: false
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - UseExternalEmojis
+      - UseExternalStickers
+      - AttachFiles
+      - EmbedLinks
+      - Stream
+      - CreatePublicThreads
+
+  - name: "@everyone"
+    permissions:
+      - ViewChannel
+      - SendMessages
+      - ReadMessageHistory
+      - Connect
+      - Speak
+      - AddReactions
+      - AttachFiles
+
+categories:
+  - name: "INFO"
+    channels:
+      - name: "welcome-and-rules"
+        type: text
+        topic: "Community guidelines and how to become a Supporter"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Developer"
+            allow:
+              - SendMessages
+
+      - name: "announcements"
+        type: text
+        topic: "Release announcements, major updates, and news"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Developer"
+            allow:
+              - SendMessages
+
+      - name: "changelog"
+        type: text
+        topic: "Detailed version history and patch notes"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Developer"
+            allow:
+              - SendMessages
+
+      - name: "roadmap"
+        type: text
+        topic: "What's planned, what's in progress, what shipped"
+        permissions:
+          - role: "@everyone"
+            deny:
+              - SendMessages
+          - role: "Developer"
+            allow:
+              - SendMessages
+
+  - name: "COMMUNITY"
+    channels:
+      - name: "general"
+        type: text
+        topic: "Main chat — talk about anything"
+        slowmode: 3
+
+      - name: "show-and-tell"
+        type: text
+        topic: "Share what you've made with the software"
+        slowmode: 10
+
+      - name: "off-topic"
+        type: text
+        topic: "Non-software conversation"
+
+  - name: "SUPPORT"
+    channels:
+      - name: "get-help"
+        type: forum
+        topic: "Having an issue? Create a post with your OS, version, and steps to reproduce"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 4320
+        available_tags:
+          - name: "Setup"
+            moderated: false
+          - name: "Bug"
+            moderated: false
+            emoji: "🐛"
+          - name: "Crash"
+            moderated: false
+          - name: "How-To"
+            moderated: false
+          - name: "Solved"
+            moderated: false
+            emoji: "✅"
+
+      - name: "feature-requests"
+        type: forum
+        topic: "Suggest features — upvote posts you want to see built"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 10080
+        available_tags:
+          - name: "New Feature"
+            moderated: false
+          - name: "Enhancement"
+            moderated: false
+          - name: "UX/UI"
+            moderated: false
+          - name: "Planned"
+            moderated: true
+            emoji: "📋"
+          - name: "Shipped"
+            moderated: true
+            emoji: "🚀"
+          - name: "Won't Do"
+            moderated: true
+
+  - name: "SUPPORTERS"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Supporter"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "supporter-chat"
+        type: text
+        topic: "Supporters-only chat — thank you for keeping the project alive"
+
+      - name: "supporter-voice"
+        type: voice
+        bitrate: 128000
+        user_limit: 0
+
+      - name: "sneak-peeks"
+        type: text
+        topic: "Early screenshots, WIP features, and design decisions"
+        permissions:
+          - role: "Supporter"
+            deny:
+              - SendMessages
+          - role: "Developer"
+            allow:
+              - SendMessages
+
+      - name: "beta-builds"
+        type: text
+        topic: "Download links for beta and pre-release builds"
+        permissions:
+          - role: "Supporter"
+            deny:
+              - SendMessages
+          - role: "Developer"
+            allow:
+              - SendMessages
+
+      - name: "beta-feedback"
+        type: forum
+        topic: "Report issues and share thoughts on beta builds"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        available_tags:
+          - name: "Bug"
+            moderated: false
+            emoji: "🐛"
+          - name: "Feedback"
+            moderated: false
+          - name: "Regression"
+            moderated: false
+            emoji: "🔴"
+          - name: "Fixed"
+            moderated: true
+            emoji: "✅"
+
+      - name: "direct-line"
+        type: text
+        topic: "Direct access to the developer — ask me anything"
+
+      - name: "vote-on-next"
+        type: text
+        topic: "Vote on what gets built next"
+        slowmode: 60
+
+      - name: "priority-support"
+        type: forum
+        topic: "Supporters get faster responses here"
+        default_sort_order: latest_activity
+        default_forum_layout: list
+        default_auto_archive_duration: 1440
+        available_tags:
+          - name: "Urgent"
+            moderated: false
+            emoji: "🔴"
+          - name: "Question"
+            moderated: false
+          - name: "Solved"
+            moderated: false
+            emoji: "✅"
+
+  - name: "VOICE"
+    channels:
+      - name: "hangout"
+        type: voice
+        bitrate: 96000
+        user_limit: 0
+
+      - name: "dev-stream"
+        type: voice
+        bitrate: 128000
+        user_limit: 50
+        topic: "Watch live coding sessions"
+
+  - name: "MOD"
+    permissions:
+      - role: "@everyone"
+        deny:
+          - ViewChannel
+      - role: "Developer"
+        allow:
+          - ViewChannel
+      - role: "Moderator"
+        allow:
+          - ViewChannel
+    channels:
+      - name: "mod-chat"
+        type: text
+        topic: "Moderation discussion"
+
+      - name: "mod-log"
+        type: text
+        topic: "Automated action logs"
+        permissions:
+          - role: "Moderator"
+            deny:
+              - SendMessages
+
+uncategorized:
+  - name: "bot-commands"
+    type: text
+    topic: "Bot commands"
+    slowmode: 3

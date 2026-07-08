@@ -1,15 +1,20 @@
 ---
+interface Props {
+  wide?: boolean;
+}
+const { wide = false } = Astro.props;
 const github = "https://github.com/dustinlacewell/disco-designer";
 ---
 
 <nav class="sticky top-0 z-50 border-b border-border/50 bg-surface/80 backdrop-blur-lg">
-  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+  <div class={`mx-auto flex items-center justify-between px-6 py-4 ${wide ? "max-w-none" : "max-w-6xl"}`}>
     <a href="/" class="font-mono text-lg font-bold tracking-tight">
       <span class="text-blurple">Disco</span> Designer
     </a>
 
     <!-- Desktop nav -->
     <div class="hidden items-center gap-6 text-sm text-text-secondary sm:flex">
+      <a href="/editor" class="transition-colors hover:text-text-primary">Editor</a>
       <a href="/docs" class="transition-colors hover:text-text-primary">Docs</a>
       <a href="/#features" class="transition-colors hover:text-text-primary">Features</a>
       <a href="/#templates" class="transition-colors hover:text-text-primary">Templates</a>
@@ -35,6 +40,7 @@ const github = "https://github.com/dustinlacewell/disco-designer";
         </svg>
       </summary>
       <div class="absolute right-0 top-full mt-2 flex w-48 flex-col gap-1 rounded-xl border border-border bg-surface-raised p-2 shadow-xl">
+        <a href="/editor" class="rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-overlay hover:text-text-primary">Editor</a>
         <a href="/docs" class="rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-overlay hover:text-text-primary">Docs</a>
         <a href="/#features" class="rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-overlay hover:text-text-primary">Features</a>
         <a href="/#templates" class="rounded-lg px-3 py-2 text-sm text-text-secondary transition-colors hover:bg-surface-overlay hover:text-text-primary">Templates</a>

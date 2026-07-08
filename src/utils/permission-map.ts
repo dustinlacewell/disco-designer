@@ -1,54 +1,20 @@
 import { PermissionFlagsBits } from 'discord.js';
+import { PERMISSION_NAMES } from '../domain/permissions.js';
 
-const PERMISSION_MAP: Record<string, bigint> = {
-  CreateInstantInvite: PermissionFlagsBits.CreateInstantInvite,
-  KickMembers: PermissionFlagsBits.KickMembers,
-  BanMembers: PermissionFlagsBits.BanMembers,
-  Administrator: PermissionFlagsBits.Administrator,
-  ManageChannels: PermissionFlagsBits.ManageChannels,
-  ManageGuild: PermissionFlagsBits.ManageGuild,
-  AddReactions: PermissionFlagsBits.AddReactions,
-  ViewAuditLog: PermissionFlagsBits.ViewAuditLog,
-  PrioritySpeaker: PermissionFlagsBits.PrioritySpeaker,
-  Stream: PermissionFlagsBits.Stream,
-  ViewChannel: PermissionFlagsBits.ViewChannel,
-  SendMessages: PermissionFlagsBits.SendMessages,
-  SendTTSMessages: PermissionFlagsBits.SendTTSMessages,
-  ManageMessages: PermissionFlagsBits.ManageMessages,
-  EmbedLinks: PermissionFlagsBits.EmbedLinks,
-  AttachFiles: PermissionFlagsBits.AttachFiles,
-  ReadMessageHistory: PermissionFlagsBits.ReadMessageHistory,
-  MentionEveryone: PermissionFlagsBits.MentionEveryone,
-  UseExternalEmojis: PermissionFlagsBits.UseExternalEmojis,
-  ViewGuildInsights: PermissionFlagsBits.ViewGuildInsights,
-  Connect: PermissionFlagsBits.Connect,
-  Speak: PermissionFlagsBits.Speak,
-  MuteMembers: PermissionFlagsBits.MuteMembers,
-  DeafenMembers: PermissionFlagsBits.DeafenMembers,
-  MoveMembers: PermissionFlagsBits.MoveMembers,
-  UseVAD: PermissionFlagsBits.UseVAD,
-  ChangeNickname: PermissionFlagsBits.ChangeNickname,
-  ManageNicknames: PermissionFlagsBits.ManageNicknames,
-  ManageRoles: PermissionFlagsBits.ManageRoles,
-  ManageWebhooks: PermissionFlagsBits.ManageWebhooks,
-  ManageEmojisAndStickers: PermissionFlagsBits.ManageEmojisAndStickers,
-  UseApplicationCommands: PermissionFlagsBits.UseApplicationCommands,
-  RequestToSpeak: PermissionFlagsBits.RequestToSpeak,
-  ManageEvents: PermissionFlagsBits.ManageEvents,
-  ManageThreads: PermissionFlagsBits.ManageThreads,
-  CreatePublicThreads: PermissionFlagsBits.CreatePublicThreads,
-  CreatePrivateThreads: PermissionFlagsBits.CreatePrivateThreads,
-  UseExternalStickers: PermissionFlagsBits.UseExternalStickers,
-  SendMessagesInThreads: PermissionFlagsBits.SendMessagesInThreads,
-  UseEmbeddedActivities: PermissionFlagsBits.UseEmbeddedActivities,
-  ModerateMembers: PermissionFlagsBits.ModerateMembers,
-  UseSoundboard: PermissionFlagsBits.UseSoundboard,
-  UseExternalSounds: PermissionFlagsBits.UseExternalSounds,
-  SendVoiceMessages: PermissionFlagsBits.SendVoiceMessages,
-  SendPolls: PermissionFlagsBits.SendPolls,
-};
-
-export const VALID_PERMISSION_NAMES = Object.keys(PERMISSION_MAP);
+/**
+ * The name→bitflag map, derived from the dependency-free domain catalog. Every catalog
+ * name is a valid `PermissionFlagsBits` key, so this stays a single source of truth: the
+ * names live in `src/domain/permissions.ts`; only the discord.js binding lives here.
+ */
+const PERMISSION_MAP: Record<string, bigint> = Object.fromEntries(
+  PERMISSION_NAMES.map((name) => {
+    const flag = (PermissionFlagsBits as Record<string, bigint>)[name];
+    if (flag === undefined) {
+      throw new Error(`Permission "${name}" is not a known discord.js PermissionFlagsBits key`);
+    }
+    return [name, flag];
+  }),
+);
 
 /**
  * Resolves a permission name string to a PermissionFlagsBits bigint.
@@ -71,4 +37,17 @@ export function resolvePermissions(names: string[]): bigint {
     bits |= resolvePermission(name);
   }
   return bits;
+}
+
+/**
+ * Converts a permissions bitfield back to an array of permission name strings.
+ */
+export function reversePermissions(bitfield: bigint): string[] {
+  const names: string[] = [];
+  for (const [name, flag] of Object.entries(PERMISSION_MAP)) {
+    if ((bitfield & flag) === flag) {
+      names.push(name);
+    }
+  }
+  return names;
 }

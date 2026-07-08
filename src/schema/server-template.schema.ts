@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { VALID_PERMISSION_NAMES } from '../utils/permission-map.js';
+import { PERMISSION_NAMES } from '../domain/permissions.js';
 
-const PermissionNameSchema = z.enum(VALID_PERMISSION_NAMES as [string, ...string[]]);
+const PermissionNameSchema = z.enum(PERMISSION_NAMES as [string, ...string[]]);
 
 export const PermissionOverwriteSchema = z.object({
   role: z.string().min(1),

@@ -104,16 +104,6 @@ function checkRoleHierarchy(
   const botHighest = me.roles.highest;
   const desiredRoleNames = new Set(template.roles.map((r) => r.name));
 
-  // Check roles that need to be CREATED — bot needs its role above position 0
-  // to create any roles at all
-  if (botHighest.position <= 1 && template.roles.filter((r) => r.name !== '@everyone').length > 0) {
-    issues.push(error(
-      `Bot's highest role "${botHighest.name}" is at position ${botHighest.position}. ` +
-      `Drag it higher in **Server Settings > Roles** so it's above the roles it needs to manage.`,
-    ));
-    return; // No point checking individual roles if the bot is at the bottom
-  }
-
   // Check roles that currently exist and would be UPDATED or DELETED —
   // they must be below the bot's highest role
   for (const role of guild.roles.cache.values()) {

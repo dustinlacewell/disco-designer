@@ -1,0 +1,16 @@
+---
+import "../styles/global.css";
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Editor from "../editor/Editor.svelte";
+---
+
+<Layout
+  title="Editor — Disco Designer"
+  description="Build a Disco Designer server template visually. Every role, channel, permission, forum, and emoji option — no YAML typing required."
+>
+  <Navbar wide />
+  <div class="h-[calc(100dvh-61px)] overflow-hidden">
+    <Editor client:only="svelte" />
+  </div>
+</Layout>

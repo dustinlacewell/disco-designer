@@ -3,12 +3,15 @@ import {
   GuildFeature,
   SortOrderType,
   ForumLayoutType,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
   type GuildChannel,
   type ForumChannel,
 } from 'discord.js';
 import type { ChannelTemplate } from '../schema/types.js';
 import type { SyncContext } from './sync-context.js';
-import { diff } from './diff.js';
+import { diff, type DiffResult } from './diff.js';
 import { applyPermissionOverwrites } from './permissions.js';
 import { withRetry, apiThrottle } from '../utils/discord-helpers.js';
 import { logger } from '../utils/logger.js';
@@ -94,6 +97,9 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
     (c) => compositeKey(c.name, c.parentId),
     () => false, // Always check for updates
   );
+
+  // Detect channels that moved between categories and prompt the user
+  await resolveMovedChannels(result, ctx);
 
   // Delete channels not in template
   for (const channel of result.toDelete) {
@@ -325,5 +331,125 @@ async function reorderChannels(ctx: SyncContext): Promise<void> {
       ctx.errors.push({ phase: 'channels', entity: 'channels', operation: 'reorder', message });
       logger.error('Failed to reorder channels:', error);
     }
+  }
+}
+
+/**
+ * Detect channels that exist under a different category than the template wants.
+ * For each, prompt the invoker: move (preserve history), recreate, or skip.
+ * Mutates the diff result in place by removing handled items from toDelete/toCreate.
+ */
+async function resolveMovedChannels(
+  result: DiffResult<DesiredChannel, GuildChannel>,
+  ctx: SyncContext,
+): Promise<void> {
+  interface MovedChannel {
+    existing: GuildChannel;
+    desired: DesiredChannel;
+  }
+
+  const moved: MovedChannel[] = [];
+  for (const existing of result.toDelete) {
+    const match = result.toCreate.find((d) => d.template.name === existing.name);
+    if (match) {
+      moved.push({ existing, desired: match });
+    }
+  }
+
+  if (moved.length === 0) return;
+
+  // Reverse-lookup category names from IDs for display
+  const idToCategory = new Map<string | null, string>();
+  for (const [name, id] of ctx.categoryNameToId) {
+    idToCategory.set(id, name);
+  }
+
+  for (const { existing, desired } of moved) {
+    const oldCategory = existing.parent?.name ?? 'uncategorized';
+    const newCategory = desired.parentId ? (idToCategory.get(desired.parentId) ?? 'unknown') : 'uncategorized';
+
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId('ch-move')
+        .setLabel('Move (keep history)')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId('ch-recreate')
+        .setLabel('Recreate (clean slate)')
+        .setStyle(ButtonStyle.Danger),
+      new ButtonBuilder()
+        .setCustomId('ch-skip')
+        .setLabel('Skip')
+        .setStyle(ButtonStyle.Secondary),
+    );
+
+    let prompt;
+    try {
+      prompt = await ctx.interaction.followUp({
+        content: `Channel **#${existing.name}** exists in **${oldCategory}** but template wants it in **${newCategory}**. What should I do?`,
+        components: [row],
+        ephemeral: true,
+      });
+    } catch {
+      // Interaction expired — skip all remaining
+      logger.warn('Interaction expired during move prompts, skipping remaining.');
+      return;
+    }
+
+    try {
+      const response = await prompt.awaitMessageComponent({
+        filter: (i) => i.user.id === ctx.interaction.user.id,
+        time: 60_000,
+      });
+
+      if (response.customId === 'ch-move') {
+        // Move the channel to the new category + apply updates
+        const editOptions = buildChannelEditOptions(desired.template, desired.parentId, ctx);
+        await withRetry(
+          () => existing.edit(editOptions),
+          `move channel #${existing.name}`,
+        );
+
+        if (desired.template.permissions.length > 0) {
+          await applyPermissionOverwrites(ctx, existing, desired.template.permissions);
+        } else {
+          await withRetry(
+            () => existing.permissionOverwrites.set([], 'Template sync'),
+            `clear permissions on #${existing.name}`,
+          );
+        }
+
+        if (desired.template.type === 'forum' && existing.type === ChannelType.GuildForum) {
+          await applyForumSettings(ctx, existing as ForumChannel, desired.template);
+        }
+
+        ctx.updated.push(`channel: #${existing.name} (moved)`);
+        logger.info(`Moved channel #${existing.name} from ${oldCategory} to ${newCategory}`);
+
+        result.toDelete.splice(result.toDelete.indexOf(existing), 1);
+        result.toCreate.splice(result.toCreate.indexOf(desired), 1);
+
+        await response.update({ content: `Moved **#${existing.name}** to **${newCategory}**.`, components: [] });
+      } else if (response.customId === 'ch-recreate') {
+        // Leave in both lists — normal delete+create flow handles it
+        await response.update({ content: `Will recreate **#${existing.name}** in **${newCategory}**.`, components: [] });
+      } else {
+        // Skip — remove from both lists
+        result.toDelete.splice(result.toDelete.indexOf(existing), 1);
+        result.toCreate.splice(result.toCreate.indexOf(desired), 1);
+        await response.update({ content: `Skipped **#${existing.name}** — left as-is.`, components: [] });
+      }
+    } catch {
+      // Timeout — default to skip
+      result.toDelete.splice(result.toDelete.indexOf(existing), 1);
+      result.toCreate.splice(result.toCreate.indexOf(desired), 1);
+      try {
+        await prompt.edit({ content: `Timed out for **#${existing.name}** — skipped.`, components: [] });
+      } catch {
+        // Follow-up edit may fail if interaction expired
+      }
+    }
+
+    await apiThrottle();
   }
 }
