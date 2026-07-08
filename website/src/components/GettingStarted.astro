@@ -14,8 +14,8 @@ const steps = [
     number: "2",
     title: "Write a template — or pick one",
     description:
-      "Create a YAML file describing your desired server state, or start with one of the 7 included templates. Define roles, categories, channels, permissions, and emoji.",
-    code: `roles:\n  - name: "Admin"\n    color: "#e74c3c"\n    permissions: [Administrator]\n\ncategories:\n  - name: "GENERAL"\n    channels:\n      - name: "general"\n        type: text`,
+      "Create a YAML file describing your desired server state, or start with one of the 7 included templates.",
+    code: null,
     link: null,
   },
   {
@@ -27,6 +27,17 @@ const steps = [
     link: null,
   },
 ];
+
+const step2Yaml = `<span class="yaml-key">roles</span><span class="yaml-punct">:</span>
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"Admin"</span>
+    <span class="yaml-key">color</span><span class="yaml-punct">:</span> <span class="yaml-string">"#e74c3c"</span>
+    <span class="yaml-key">permissions</span><span class="yaml-punct">:</span> [<span class="yaml-string">Administrator</span>]
+
+<span class="yaml-key">categories</span><span class="yaml-punct">:</span>
+  - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"GENERAL"</span>
+    <span class="yaml-key">channels</span><span class="yaml-punct">:</span>
+      - <span class="yaml-key">name</span><span class="yaml-punct">:</span> <span class="yaml-string">"general"</span>
+        <span class="yaml-key">type</span><span class="yaml-punct">:</span> <span class="yaml-string">text</span>`;
 ---
 
 <section id="getting-started" class="px-6 py-20 sm:py-28">
@@ -76,6 +87,9 @@ const steps = [
                 </a>
               )}
 
+              {step.number === "2" && (
+                <pre class="mt-4 overflow-x-auto rounded-xl border border-border bg-surface-raised p-4 font-mono text-sm leading-relaxed"><code set:html={step2Yaml} /></pre>
+              )}
               {step.code && (
                 <pre class="mt-4 overflow-x-auto rounded-xl border border-border bg-surface-raised p-4 font-mono text-sm leading-relaxed"><code>{step.code}</code></pre>
               )}

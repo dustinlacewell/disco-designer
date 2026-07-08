@@ -1,48 +1,34 @@
 ---
-const pillars = [
+const points = [
   {
-    title: "Every Discord feature",
+    title: "Full sync, both directions",
     description:
-      "Text, voice, forum, stage, and announcement channels. 40+ permission flags with per-role and per-channel overrides, category inheritance, forum tags, slowmode, bitrate, NSFW, and custom emoji — nothing is out of reach.",
-    icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5" />`,
-  },
-  {
-    title: "Full sync, every run",
-    description:
-      "Creates what's missing, updates what's changed, deletes what's extra. One command reconciles your server to match the template exactly — no drift, no manual cleanup after the fact.",
+      "Every run creates what's missing, updates what's changed, and deletes what's extra — your server always matches the template, exactly.",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M21.015 4.356v4.992" />`,
   },
   {
-    title: "Preflight safety & feedback",
+    title: "Preflight safety",
     description:
-      "Before any mutation, preflight checks bot permissions, role hierarchy, and channel/emoji limits. You get a clear summary, a confirmation prompt, and detailed step-by-step feedback as it runs.",
+      "Before anything changes, preflight checks permissions, role hierarchy, and limits — you get a summary and a confirmation prompt, every time.",
     icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />`,
   },
 ];
 ---
 
-<section id="features" class="px-6 py-20 sm:py-28">
-  <div class="mx-auto max-w-6xl">
-    <div class="mb-16 text-center">
-      <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
-        Nothing hand-wavy about it
-      </h2>
-      <p class="mx-auto mt-4 max-w-2xl text-text-secondary">
-        Full coverage of Discord's structure, a sync that always matches the
-        template, and safety checks before anything changes.
-      </p>
-    </div>
-
-    <div class="grid gap-12 sm:grid-cols-3 sm:divide-x sm:divide-border">
-      {pillars.map((p) => (
-        <div class="sm:px-8 first:sm:pl-0 last:sm:pr-0">
-          <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blurple/10">
-            <svg class="h-6 w-6 text-blurple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<section id="features" class="border-y border-border/50 px-6 py-14">
+  <div class="mx-auto max-w-4xl">
+    <div class="grid gap-10 sm:grid-cols-2">
+      {points.map((p) => (
+        <div class="flex gap-4">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blurple/10">
+            <svg class="h-5 w-5 text-blurple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <Fragment set:html={p.icon} />
             </svg>
           </div>
-          <h3 class="mb-3 text-lg font-semibold">{p.title}</h3>
-          <p class="leading-relaxed text-text-secondary">{p.description}</p>
+          <div>
+            <h3 class="mb-1.5 font-semibold">{p.title}</h3>
+            <p class="text-sm leading-relaxed text-text-secondary">{p.description}</p>
+          </div>
         </div>
       ))}
     </div>
