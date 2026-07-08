@@ -1,0 +1,10 @@
+# Disco Designer bot — outbound-only Discord gateway client.
+# No cloudflared sidecar / no host ports: the bot serves no inbound traffic.
+# Secrets (DISCORD_TOKEN, CLIENT_ID, GUILD_ID) come from .env at runtime.
+services:
+  bot:
+    build: .
+    image: discord-maker:latest
+    container_name: discord-maker
+    restart: unless-stopped
+    env_file: .env

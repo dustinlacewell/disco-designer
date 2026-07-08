@@ -1,0 +1,10 @@
+node_modules
+dist
+.env
+.git
+.gitignore
+.github
+website
+examples
+*.md
+pfp.jpg
