@@ -9,7 +9,7 @@ import {
   type GuildChannel,
   type ForumChannel,
 } from 'discord.js';
-import type { ChannelTemplate } from '../schema/types.js';
+import type { ChannelTemplate, PermissionOverwriteTemplate } from '../schema/types.js';
 import type { SyncContext } from './sync-context.js';
 import { diff, type DiffResult } from './diff.js';
 import { applyPermissionOverwrites } from './permissions.js';
@@ -60,6 +60,7 @@ const FORUM_LAYOUT_MAP: Record<string, ForumLayoutType> = {
 interface DesiredChannel {
   template: ChannelTemplate;
   parentId: string | null;
+  categoryPermissions: PermissionOverwriteTemplate[];
 }
 
 export async function syncChannels(ctx: SyncContext): Promise<void> {
@@ -71,12 +72,12 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
   for (const category of ctx.template.categories) {
     const parentId = ctx.categoryNameToId.get(category.name) ?? null;
     for (const ch of category.channels) {
-      desired.push({ template: ch, parentId });
+      desired.push({ template: ch, parentId, categoryPermissions: category.permissions });
     }
   }
 
   for (const ch of ctx.template.uncategorized) {
-    desired.push({ template: ch, parentId: null });
+    desired.push({ template: ch, parentId: null, categoryPermissions: [] });
   }
 
   // Get all current non-category channels (excluding threads)
@@ -119,7 +120,7 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
   }
 
   // Create missing channels
-  for (const { template: ch, parentId } of result.toCreate) {
+  for (const { template: ch, parentId, categoryPermissions } of result.toCreate) {
     try {
       const options = buildChannelCreateOptions(ch, parentId, ctx);
       const created = await withRetry(
@@ -129,10 +130,8 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
       ctx.created.push(`channel: #${ch.name}`);
       logger.info(`Created channel: #${ch.name}`);
 
-      // Apply permission overwrites
-      if (ch.permissions.length > 0) {
-        await applyPermissionOverwrites(ctx, created, ch.permissions);
-      }
+      // Apply permission overwrites (own, else synced from category)
+      await syncChannelOverwrites(ctx, created, ch, categoryPermissions);
 
       // Apply forum-specific settings after creation
       if (ch.type === 'forum' && created.type === ChannelType.GuildForum) {
@@ -147,7 +146,7 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
   }
 
   // Update existing channels
-  for (const { desired: { template: ch, parentId }, current } of result.toUpdate) {
+  for (const { desired: { template: ch, parentId, categoryPermissions }, current } of result.toUpdate) {
     try {
       const editOptions = buildChannelEditOptions(ch, parentId, ctx);
       await withRetry(
@@ -157,15 +156,8 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
       ctx.updated.push(`channel: #${ch.name}`);
       logger.info(`Updated channel: #${ch.name}`);
 
-      // Apply permission overwrites
-      if (ch.permissions.length > 0) {
-        await applyPermissionOverwrites(ctx, current, ch.permissions);
-      } else {
-        await withRetry(
-          () => current.permissionOverwrites.set([], 'Template sync'),
-          `clear permissions on #${ch.name}`,
-        );
-      }
+      // Apply permission overwrites (own, else synced from category)
+      await syncChannelOverwrites(ctx, current, ch, categoryPermissions);
 
       // Apply forum-specific settings
       if (ch.type === 'forum' && current.type === ChannelType.GuildForum) {
@@ -184,6 +176,28 @@ export async function syncChannels(ctx: SyncContext): Promise<void> {
 
   const total = result.toCreate.length + result.toUpdate.length + result.toDelete.length;
   await ctx.progress.report('channels', `Done. ${total} change(s).`);
+}
+
+/**
+ * Apply a channel's effective overwrites: its own if it declares any, otherwise a copy of its
+ * category's (sync-to-category). Declaring any overwrite unsyncs the channel from its category.
+ * With neither its own nor a category's overwrites, clear to empty.
+ */
+async function syncChannelOverwrites(
+  ctx: SyncContext,
+  channel: GuildChannel,
+  template: ChannelTemplate,
+  categoryPermissions: PermissionOverwriteTemplate[],
+): Promise<void> {
+  const overwrites = template.permissions.length > 0 ? template.permissions : categoryPermissions;
+  if (overwrites.length > 0) {
+    await applyPermissionOverwrites(ctx, channel, overwrites);
+  } else {
+    await withRetry(
+      () => channel.permissionOverwrites.set([], 'Template sync'),
+      `clear permissions on #${channel.name}`,
+    );
+  }
 }
 
 // Channel types that support the `topic` field
@@ -410,14 +424,7 @@ async function resolveMovedChannels(
           `move channel #${existing.name}`,
         );
 
-        if (desired.template.permissions.length > 0) {
-          await applyPermissionOverwrites(ctx, existing, desired.template.permissions);
-        } else {
-          await withRetry(
-            () => existing.permissionOverwrites.set([], 'Template sync'),
-            `clear permissions on #${existing.name}`,
-          );
-        }
+        await syncChannelOverwrites(ctx, existing, desired.template, desired.categoryPermissions);
 
         if (desired.template.type === 'forum' && existing.type === ChannelType.GuildForum) {
           await applyForumSettings(ctx, existing as ForumChannel, desired.template);
