@@ -19,8 +19,11 @@
   reorderable={false}
 >
   {#snippet item(o: EOverwrite)}
+    {@const options = !o.role || store.roleNames.includes(o.role)
+      ? roleOptions
+      : [...roleOptions, { value: o.role, label: `${o.role} (undefined)` }]}
     <div class="flex flex-col gap-2">
-      <Select label="Role" bind:value={o.role} options={roleOptions} help="Who this override applies to." />
+      <Select label="Role" bind:value={o.role} options={options} help="Who this override applies to." />
       <PermissionTriState bind:allow={o.allow} bind:deny={o.deny} />
     </div>
   {/snippet}

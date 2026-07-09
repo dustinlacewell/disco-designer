@@ -5,6 +5,7 @@
   import Field from '../primitives/Field.svelte';
   import PermissionPicker from './PermissionPicker.svelte';
   import { FIELDS, EVERYONE } from '@disco/domain/descriptor';
+  import { store } from '../store.svelte.js';
   import type { ERole } from '../model.js';
 
   let { role }: { role: ERole } = $props();
@@ -19,7 +20,7 @@
     settings are ignored. It can't be reordered or deleted.
   </div>
 {:else}
-  <TextInput label={FIELDS.roleName.label} help={FIELDS.roleName.help} bind:value={role.name} maxlength={100} placeholder={FIELDS.roleName.placeholder} />
+  <TextInput label={FIELDS.roleName.label} help={FIELDS.roleName.help} value={role.name} oninput={(v) => store.renameRole(role._id, v)} maxlength={100} placeholder={FIELDS.roleName.placeholder} />
   <ColorInput label={FIELDS.roleColor.label} help={FIELDS.roleColor.help} bind:value={role.color} />
   <Toggle label={FIELDS.roleHoist.label} help={FIELDS.roleHoist.help} bind:checked={role.hoist} />
   <Toggle label={FIELDS.roleMentionable.label} help={FIELDS.roleMentionable.help} bind:checked={role.mentionable} />

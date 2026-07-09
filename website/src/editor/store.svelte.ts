@@ -15,6 +15,7 @@ import {
   cloneWithNewIds,
   syncCounterToDoc,
   type EDoc,
+  type EOverwrite,
   type ERole,
   type ECategory,
   type EChannel,
@@ -166,8 +167,18 @@ class EditorStore {
   removeRole(id: Id) {
     const i = idx(this.doc.roles, id);
     if (i < 0) return;
+    const { name } = this.doc.roles[i];
     this.doc.roles.splice(i, 1);
+    if (name !== EVERYONE) this.dropOverwritesForRole(name);
     this.afterRemove();
+  }
+  /** Rename a role and retarget every overwrite that referenced its old name. */
+  renameRole(id: Id, name: string) {
+    const role = this.role(id);
+    if (!role || role.name === name) return;
+    const prev = role.name;
+    role.name = name;
+    if (prev !== EVERYONE) this.retargetOverwrites(prev, name);
   }
   moveRole(id: Id, dir: -1 | 1) {
     moveInList(this.doc.roles, id, dir);
@@ -259,6 +270,29 @@ class EditorStore {
       (sel.kind === 'channel' && this.channel(sel.id)) ||
       (sel.kind === 'emoji' && this.emojiNode(sel.id));
     if (!exists) this.selection = { kind: 'server' };
+  }
+
+  /** Run `fn` over every permission-overwrite list in the document. */
+  private forEachOverwriteList(fn: (list: EOverwrite[]) => void) {
+    for (const cat of this.doc.categories) {
+      fn(cat.permissions);
+      for (const ch of cat.channels) fn(ch.permissions);
+    }
+    for (const ch of this.doc.uncategorized) fn(ch.permissions);
+  }
+
+  /** Drop every overwrite targeting `role` (referential cleanup on role delete). */
+  private dropOverwritesForRole(role: string) {
+    this.forEachOverwriteList((list) => {
+      for (let i = list.length - 1; i >= 0; i--) if (list[i].role === role) list.splice(i, 1);
+    });
+  }
+
+  /** Point every overwrite targeting `from` at `to` (referential cleanup on role rename). */
+  private retargetOverwrites(from: string, to: string) {
+    this.forEachOverwriteList((list) => {
+      for (const o of list) if (o.role === from) o.role = to;
+    });
   }
 
   // -- document-level ------------------------------------------------------
